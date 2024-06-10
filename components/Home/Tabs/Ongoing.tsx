@@ -16,6 +16,7 @@ const Ongoing = () => {
               price={item.price}
               items={item.items}
               status={item.status}
+              contract={item.contract}
             />
           ))}
         </div>
