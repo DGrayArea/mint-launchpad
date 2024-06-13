@@ -13,7 +13,7 @@ export default function Collection() {
       className={`flex min-h-screen flex-col items-center text-white bg-[#0b0f19] ${font.className} w-full`}
     >
       <Nav />
-      <div className="flex flex-row items-center mt-16 w-full">
+      <div className="flex flex-row items-center mt-5 md:mt-16 lg:mt-16 w-full justify-center min-h-sreen">
         <Photo />
       </div>
     </main>

@@ -5,11 +5,10 @@ import { HiBadgeCheck } from "react-icons/hi";
 import { LiaTelegramPlane } from "react-icons/lia";
 import { PiGlobeHemisphereWestLight } from "react-icons/pi";
 import { TfiTwitter } from "react-icons/tfi";
-import truncateEthAddress from "truncate-eth-address";
 
 const JumboCard = () => {
   return (
-    <div className="relative container -mt-14 lg:-mt-20">
+    <div className="relative container -mt-14 lg:-mt-20 w-full px-3.5">
       <div className="bg-[#111827] border border-gray-600 p-5 lg:p-8 rounded-3xl md:rounded-[40px] shadow-xl flex flex-col md:flex-row lg:items-center relative">
         <p className=" absolute right-3 sm:right-5 top-4 text-xs sm:text-xl w-fit px-4 font-semibold p-1 border-2 rounded-full flex justify-center items-center border-blue-500 text-blue-500">
           DA

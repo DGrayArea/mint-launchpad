@@ -1,5 +1,4 @@
 import Nav from "@/components/Header/Nav";
-import { Tabs } from "@/components/Home/Tabs";
 import { Poppins } from "next/font/google";
 
 const font = Poppins({

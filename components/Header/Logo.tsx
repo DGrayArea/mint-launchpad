@@ -5,14 +5,14 @@ const Logo = () => {
   return (
     <Link
       href="/"
-      className="flex flex-row items-center font-extrabold text-3xl"
+      className="flex flex-row items-center font-extrabold text-lg md:text-3xl lg:text-3xl"
     >
       <Image
         src="/logo.png"
         width={80}
         height={80}
         alt="logo"
-        className="rounded-full w-[60px] mr-3"
+        className="rounded-full w-[38px] md:w-[50px] lg:w-[40px] mr-1.5 lg:mr-3"
       />
       MintPad
     </Link>

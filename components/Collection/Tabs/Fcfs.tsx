@@ -2,26 +2,28 @@ const Fcfs = () => {
   const mintDone = true;
   return (
     <div>
-      <div className="flex flex-col sm:flex-row items-baseline p-6 border-2 border-green-500 rounded-xl relative mb-3">
+      <div className="flex flex-col sm:flex-row items-baseline p-5 lg:p-6 border-2 border-green-500 rounded-xl relative mb-3">
         <div>
-          <span className="text-3xl xl:text-4xl font-semibold text-green-500">
+          <span className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-green-500">
             FREE
           </span>
-          <span className="text-lg text-neutral-400 sm:ml-3.5">(0/3)</span>
+          <span className="text-base lg:text-lg text-neutral-400 sm:ml-3.5">
+            (0/3)
+          </span>
         </div>
-        <span className="block absolute bottom-full translate-y-2.5 py-1 px-1.5 bg-[#111827] text-sm text-neutral-400">
+        <span className="block absolute bottom-full translate-y-2.5 py-1 px-1.5 bg-[#111827] text-xs lg:text-sm text-neutral-400">
           Mint Price Of <span className="text-xs text-blue-500">FCFS</span>
         </span>
-        <div className="bg-blue-500/30 text-blue-200  w-fit p-2 rounded-md text-sm absolute top-2 right-2">
+        <div className="bg-blue-500/30 text-blue-200 w-fit p-2 rounded-md text-xs lg:text-sm absolute top-2 right-2">
           Total: 100 NFTs
         </div>
       </div>
       {mintDone ? (
-        <span className="leading-none mt-10 font-semibold text-red-500">
+        <span className="leading-none mt-10 font-semibold text-red-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
           FCFS minting done, switch to Public tab
         </span>
       ) : (
-        <span className="leading-none mt-10 font-semibold text-green-500">
+        <span className="leading-none mt-10 font-semibold text-green-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
           FCFS minting ongoing
         </span>
       )}

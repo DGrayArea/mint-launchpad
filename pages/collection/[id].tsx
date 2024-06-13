@@ -19,7 +19,7 @@ export default function Collection() {
         <Banner />
       </div>
 
-      <div className="mt-80">
+      <div className="mt-[650px] md:mt-[450px] lg:mt-80 w-full h-full">
         <CardGrid />
       </div>
     </main>

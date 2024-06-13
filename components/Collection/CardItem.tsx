@@ -5,31 +5,38 @@ import Link from "next/link";
 
 const CardItem = ({ image }: { image: string }) => {
   return (
-    <div className="pt-3">
-      <div className="flex flex-col items-baseline border-2 border-gray-500 p-2 rounded-xl relative py-1.5 md:py-2 px-2.5 2xl:px-3.5 text-sm sm:text-base font-semibold ">
+    <div className="pt-3 w-full h-full">
+      <div className="flex flex-col items-baseline border border-gray-500 rounded-lg relative text-xs md:text-base font-semibold w-full h-full px-1.5">
         <Image
-          className="rounded-xl"
+          className="rounded-md w-full h-full mt-1.5 hover:scale-110 transition-transform duration-300 ease-in-out will-change-transform delay-100 cursor-pointer"
           src={image}
           alt="card-image"
-          width={300}
-          height={300}
+          width={400}
+          height={400}
         />
 
-        <div className="border-b-[1px] border-b-gray-500 w-full my-10" />
-        <div className="flex flex-row w-full justify-between mb-4 items-center space-x-3">
-          <div className="flex justify-between items-center border-green-500 border-2 rounded-lg py-2.5 px-4 cursor-pointer relative">
-            <span className="text-green-500 font-semibold flex flex-row justify-between items-center">
+        <div className="border-b-[1px] border-b-gray-600 w-full my-4 mx-auto" />
+        <div className="flex flex-row w-full justify-between mb-2 items-center space-x-3">
+          <div className="flex justify-between items-center border-green-500 border-2 md:rounded-lg rounded-md lg:py-2.5 py-2 px-3 lg:px-4 cursor-pointer relative">
+            <span className="text-green-500 font-semibold hidden lg:flex flex-row justify-between items-center">
               <FaLeaf size={22} className="mr-4" />
               0.3
             </span>
-            <span className="block absolute font-normal bottom-full translate-y-3 p-1 -mx-1 text-xs sm:text-sm text-white z-10 bg-[#111827]/90">
+            <span className="text-green-500 font-semibold flex lg:hidden flex-row justify-between items-center">
+              <FaLeaf size={16} className="mr-4" />
+              0.3
+            </span>
+            <span className="block absolute font-normal bottom-full translate-y-3 p-1 -mx-1 text-xs md:text-base text-white z-10 bg-[#111827]/90">
               Price
             </span>
           </div>
 
           <div className=" !leading-none flex justify-center items-center">
-            <Button className="text-xs sm:text-sm 2xl:text-base py-6 px-2.5">
+            <Button className="text-xs sm:text-sm 2xl:text-base py-6 px-2.5 hidden md:flex">
               <Link href="#"> View on Explorer</Link>
+            </Button>
+            <Button className="text-xs sm:text-sm 2xl:text-base py-2 px-4 flex md:hidden">
+              <Link href="#"> View</Link>
             </Button>
           </div>
         </div>
