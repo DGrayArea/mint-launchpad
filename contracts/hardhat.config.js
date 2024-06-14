@@ -16,7 +16,7 @@ module.exports = {
   },
   defaultNetwork: "mint-local",
   networks: {
-    // for mainnet
+    // for mainnets vdkvn
     "mint-mainnet": {
       url: "https://rpc.mintchain.io",
       accounts: [process.env.PRIVATE_KEY],
