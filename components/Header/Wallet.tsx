@@ -1,18 +1,16 @@
 import { BellIcon } from "@radix-ui/react-icons";
 import { WalletIcon } from "@heroicons/react/24/outline";
+import { ConnectButton } from "./ConnectButton";
+import { ConnectMobile } from "./ConnectMobile";
 
 const Wallet = () => {
   return (
     <div className="lg:border-l lg:border-l-white flex flex-row pl-0 lg:pl-5 items-center space-x-0 lg:space-x-7">
       <div className="hidden lg:flex items-center">
-        <button className="bg-inherit border border-gray-500 px-4 py-2.5 whitespace-nowrap rounded-xl">
-          Connect Wallet
-        </button>
+        <ConnectButton />
       </div>
       <div className="flex lg:hidden items-center">
-        <button className="bg-inherit border border-gray-500 px-4 py-2 whitespace-nowrap rounded-2xl text-xs md:text-lg">
-          Connect Wallet
-        </button>
+        <ConnectMobile />
       </div>
       <div className="cursor-pointer hidden lg:block">
         <BellIcon className="outline-white" width={34} height={34} />

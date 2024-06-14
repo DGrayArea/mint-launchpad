@@ -7,6 +7,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "ipfs.bluemove.net",
       },
+      {
+        protocol: "https",
+        hostname: "api.dicebear.com",
+      },
     ],
   },
 };

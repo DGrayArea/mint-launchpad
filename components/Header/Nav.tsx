@@ -11,6 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import MobileSocials from "../Mobile/MobileSocials";
 import Link from "next/link";
+import { ConnectNav } from "./ConnectNav";
 
 const Nav = () => {
   const [search, setSearch] = useState<string>("");
@@ -155,9 +156,7 @@ const Nav = () => {
             <button className="bg-inherit border border-gray-500 px-4 py-4 whitespace-nowrap rounded-3xl text-sm font-bold w-full  bg-gradient-to-r to-pink-500 from-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none text-center">
               Mint BasePunk
             </button>
-            <button className="bg-inherit border border-gray-500 px-4 py-4 whitespace-nowrap rounded-3xl text-sm font-bold w-full">
-              Connect Wallet
-            </button>
+            <ConnectNav />
           </div>
         </div>
       </div>
