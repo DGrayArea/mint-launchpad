@@ -1,4 +1,11 @@
-pragma solidity >=0.7.0 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+// Importing OpenZeppelin Contracts
+import "../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "./@openzeppelin/contracts/access/Ownable.sol";
+import "./@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./@openzeppelin/contracts/utils/Strings.sol";
 
 contract BasePunks is ERC721Enumerable, Ownable, ReentrancyGuard {
   using Strings for uint256;
@@ -9,34 +16,37 @@ contract BasePunks is ERC721Enumerable, Ownable, ReentrancyGuard {
 
   bool public paused = false;
   bool public revealed = false;
-  bool public isPublicMint; 
-  bool public isWhitelistMint;
+  bool public isPublicMint = false;
+  bool public isWhitelistMint = false;
+  bool public isFCFSMint = false;
 
-  uint256 public cost = 0.066 ether;
+  uint256 public cost = 0.0003 ether;
   uint256 public maxSupply = 3333;
   uint256 public whitelistLimit;
   uint256 public publicLimit;
-  uint256 public totalSupply;
+  uint256 public FCFSLimit;
 
   mapping(address => bool) public whitelist;
+  mapping(address => bool) public FCFSMint;
+
   mapping(address => uint256) public publicMinted;
   mapping(address => uint256) public whitelistMinted;
+  mapping(address => uint256) public FSCSMinted;
+  
 
   constructor(
     string memory _name,
     string memory _symbol,
     string memory _initBaseURI,
     string memory _initNotRevealedUri,
-    bool _publicMint,
-    bool _whitelistMint,
     uint256 _limit,
     uint256 _pubLimit,
+    uint256 _FCFSLimit,
     address _creator
   ) ERC721(_name, _symbol) {
-    isPublicMint = _whitelistMint;
-    isWhitelistMint = _publicMint;
     whitelistLimit = _limit;
     publicLimit = _pubLimit;
+    FCFSLimit = _FCFSLimit;
     transferOwnership(_creator);
     setBaseURI(_initBaseURI);
     setNotRevealedURI(_initNotRevealedUri);
@@ -59,7 +69,11 @@ contract BasePunks is ERC721Enumerable, Ownable, ReentrancyGuard {
          require(whitelistMinted[msg.sender] + _mintAmount <= whitelistLimit, "WL Minting limit exceeded");
          _safeMint(msg.sender, supply + _mintAmount);
          whitelistMinted[msg.sender] += _mintAmount;
-      } else if (isPublicMint) {
+      } else if (isFCFSMint) {
+         require(FSCSMinted[msg.sender] + _mintAmount <= FCFSLimit, "Pub Minting limit exceeded");
+         _safeMint(msg.sender, supply + _mintAmount);
+         FSCSMinted[msg.sender] += _mintAmount;
+      }else if (isPublicMint) {
          require(msg.value >= cost * _mintAmount, "Insufficient funds");
          require(publicMinted[msg.sender] + _mintAmount <= publicLimit, "Pub Minting limit exceeded");
          _safeMint(msg.sender, supply + _mintAmount);
@@ -84,9 +98,19 @@ contract BasePunks is ERC721Enumerable, Ownable, ReentrancyGuard {
         }
     }
 
-  function setWhitelistLimit(uint256 limit) public onlyOwner {
-        whitelistLimit = limit;
+  function addToFCFS(address[] calldata _addresses) public onlyOwner {
+        for (uint256 i = 0; i < _addresses.length; i++) {
+            FCFSMint[_addresses[i]] = true;
+        }
     }
+
+  function removeFromFCFS(address[] calldata _addresses) public onlyOwner {
+        for (uint256 i = 0; i < _addresses.length; i++) {
+            FCFSMint[_addresses[i]] = false;
+        }
+    }
+
+
 
   function walletOfOwner(address _owner)
     public
