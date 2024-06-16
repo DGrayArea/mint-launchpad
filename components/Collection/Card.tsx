@@ -17,7 +17,7 @@ const Card = () => {
   return (
     <div className="bg-[#111827] rounded-3xl overflow-hidden relative shadow-2xl drop-shadow-2xl py-4 px-5 lg:py-8 lg:px-10 p-4 w-full">
       <div className="text-2xl lg:text-3xl lg:leading-[2.5rem] 2xl:text-4xl 2xl:leading-[3rem] font-extrabold flex items-end gap-2.5 whitespace-nowrap min-w-[200px] w-full">
-        Eragon Passport
+        Mint Punk
       </div>
       <div className="w-full justify-between items-center flex mt-4 lg:mt-6 space-x-6">
         <div className="flex flex-row items-center space-x-1.5 lg:space-x-3 w-full">
