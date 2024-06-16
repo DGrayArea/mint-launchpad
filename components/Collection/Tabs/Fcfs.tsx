@@ -46,7 +46,7 @@ const FCFS = () => {
     if (result.data && supply && mintAmountLeft) {
       //setMintDone(!result?.data[0]);
       //@ts-ignore
-      setMintDone(!result?.data[0]);
+      setMintDone(!result?.data[1]);
       //@ts-ignore
       setTotalSupply(Number(supply?.data));
       //@ts-ignore
@@ -107,8 +107,8 @@ const FCFS = () => {
         </div>
       </div>
       {mintDone ? (
-        <span className="leading-none mt-10 font-semibold text-red-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
-          FCFS minting done, switch to Public tab
+        <span className="leading-none mt-10 font-semibold text-yellow-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
+          FCFS minting pending please switch to Whitelist tab
         </span>
       ) : (
         <span className="leading-none mt-10 font-semibold text-green-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
@@ -135,7 +135,7 @@ const FCFS = () => {
       {mintDone || mintAmount === 1 ? (
         <button
           disabled
-          className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-not-allowed disabled:bg-opacity-70 bg-red-400 hover:bg-red-700 text-neutral-50 flex-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-6000 dark:focus:ring-offset-0"
+          className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-not-allowed disabled:bg-opacity-70 bg-yellow-400 hover:bg-yellow-700 text-neutral-50 flex-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-6000 dark:focus:ring-offset-0"
         >
           Sold out
         </button>
