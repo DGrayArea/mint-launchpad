@@ -5,19 +5,18 @@ import { mainnet } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { mintMainnet, mintSepoliaTestnet } from "@/constants/customChains";
-import { Toaster } from "@/components/ui/toaster";
 
 const config = createConfig(
   getDefaultConfig({
     // Your dApps chains
-    chains: [mintMainnet],
+    chains: [mainnet, mintMainnet, mintSepoliaTestnet],
     transports: {
       // RPC URL for each chain
-      // [mainnet.id]: http(
-      //   `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`
-      // ),
+      [mainnet.id]: http(
+        `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`
+      ),
       [mintMainnet.id]: http("https://rpc.mintchain.io"),
-      // [mintSepoliaTestnet.id]: http("https://sepolia-testnet-rpc.mintchain.io"),
+      [mintSepoliaTestnet.id]: http("https://sepolia-testnet-rpc.mintchain.io"),
     },
 
     // Required API Keys
@@ -42,7 +41,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider>
           <Component {...pageProps} />
-          <Toaster />
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

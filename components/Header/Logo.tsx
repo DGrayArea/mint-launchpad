@@ -14,7 +14,7 @@ const Logo = () => {
         alt="logo"
         className="rounded-full w-[38px] md:w-[50px] lg:w-[40px] mr-1.5 lg:mr-3"
       />
-      MintPad
+      PunkPad
     </Link>
   );
 };

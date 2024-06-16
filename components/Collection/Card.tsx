@@ -10,6 +10,7 @@ import { useMintTab } from "@/hooks/useMintTab";
 import Whitelist from "./Tabs/Whitelist";
 import Fcfs from "./Tabs/Fcfs";
 import Public from "./Tabs/Public";
+import { contract } from "@/config";
 
 const Card = () => {
   const { currentTab, setCurrentTab } = useMintTab();
@@ -31,7 +32,7 @@ const Card = () => {
           </div>
           <div className="space-y-[2px]">
             <div className="text-xs dark:text-neutral-400">
-              {truncateEthAddress("0xC89f7cceadD2E57CDedd0c36F3537f633f31fAfB")}
+              {truncateEthAddress(contract)}
             </div>
             <div className="text-xs lg:text-sm font-bold flex flex-row items-center">
               CREATOR
@@ -54,32 +55,64 @@ const Card = () => {
         </div>
 
         <div className="hidden lg:flex flex-row space-x-2 items-center">
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="https://discord.com/invite/punkecosystem"
+            target="_blank"
+          >
             <AiOutlineDiscord size={25} />
           </Link>
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          {/* <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="#"
+            target="_blank"
+          >
             <LiaTelegramPlane size={24} />
-          </Link>
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          </Link> */}
+          <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="https://x.com/PunkonMint?s=09"
+            target="_blank"
+          >
             <TfiTwitter size={22} />
           </Link>
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          {/* <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="#"
+            target="_blank"
+          >
             <PiGlobeHemisphereWestLight size={24} />
-          </Link>
+          </Link> */}
         </div>
         <div className="flex lg:hidden flex-row space-x-2 items-center w-full">
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="https://discord.com/invite/punkecosystem"
+            target="_blank"
+          >
             <AiOutlineDiscord size={16} />
           </Link>
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          {/* <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="#"
+            target="_blank"
+          >
             <LiaTelegramPlane size={16} />
-          </Link>
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          </Link> */}
+          <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="https://x.com/PunkonMint?s=09"
+            target="_blank"
+          >
             <TfiTwitter size={16} />
           </Link>
-          <Link className="p-1.5 bg-gray-500/50 rounded-full" href="#">
+          {/* <Link
+            className="p-1.5 bg-gray-500/50 rounded-full"
+            href="#"
+            target="_blank"
+          >
             <PiGlobeHemisphereWestLight size={16} />
-          </Link>
+          </Link> */}
         </div>
       </div>
 
