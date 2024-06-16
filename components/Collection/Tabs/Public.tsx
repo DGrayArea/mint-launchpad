@@ -71,15 +71,16 @@ const Public = () => {
         args: [1],
         value: parseEther(String(Number(amount * 0.00078))),
       });
-
-      setTimeout(
-        () =>
-          toast({
-            title: "Mint Successful",
-            description: "NFT Succesfully minted",
-          }),
-        3500
-      );
+      if (isWhitelisted.data) {
+        setTimeout(
+          () =>
+            toast({
+              title: "Mint Successful",
+              description: "NFT Succesfully minted",
+            }),
+          4000
+        );
+      }
     }
   };
 

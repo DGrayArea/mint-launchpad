@@ -1,7 +1,12 @@
 import { contract } from "@/config";
 import { abi } from "@/config/Abi";
 import { useEffect, useState } from "react";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { useToast } from "@/components/ui/use-toast";
 import { parseEther } from "viem";
 
@@ -54,7 +59,6 @@ const Whitelist = () => {
   }, [result, supply, mintAmountLeft]);
 
   const callMint = () => {
-    console.log("Clicked");
     if (isWhitelisted.data) {
       if (Number(mintAmountLeft?.data) > 0) {
         toast({
@@ -70,14 +74,16 @@ const Whitelist = () => {
           value: parseEther("0.00078"),
         });
 
-        setTimeout(
-          () =>
-            toast({
-              title: "Mint Successful",
-              description: "NFT Succesfully minted",
-            }),
-          4000
-        );
+        if (isWhitelisted.data) {
+          setTimeout(
+            () =>
+              toast({
+                title: "Mint Successful",
+                description: "NFT Succesfully minted",
+              }),
+            4000
+          );
+        }
       }
     } else {
       toast({
@@ -125,15 +131,6 @@ const Whitelist = () => {
   //   //   functionName: "addToWhitelist",
   //   //   args: [["0xa31420f5bc6cf8a9d4ac7b6132b7fc2f93546fab"]],
   //   // });
-
-  //   setTimeout(
-  //     () =>
-  //       toast({
-  //         title: "Mint Successful",
-  //         description: "NFT Succesfully minted",
-  //       }),
-  //     3500
-  //   );
   // };
 
   return (
