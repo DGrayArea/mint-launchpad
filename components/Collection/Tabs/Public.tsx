@@ -68,7 +68,7 @@ const Public = () => {
         abi,
         address: contract,
         functionName: "mint",
-        args: [1],
+        args: [amount],
         value: parseEther(String(Number(amount * 0.00078))),
       });
       if (isWhitelisted.data) {

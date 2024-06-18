@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import { useState } from "react";
 import MintTab from "@/components/Collection/Launchpad/MintTab";
 import CheckWL from "@/components/Collection/Launchpad/CheckWL";
+import { format } from "date-fns";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -13,7 +14,7 @@ const font = Poppins({
 export default function Home() {
   function getUnixTimeFiveMinutesFromNow(): number {
     const now = new Date();
-    const fiveMinutesLater = new Date(now.getTime() + 2 * 60 * 1000);
+    const fiveMinutesLater = new Date(now.getTime() + 1 * 60 * 1000);
     return Math.floor(fiveMinutesLater.getTime() / 1000);
   }
   function getUnixTimeTenAmUtcToday(): number {
@@ -25,7 +26,7 @@ export default function Home() {
         now.getUTCFullYear(),
         now.getUTCMonth(),
         now.getUTCDate(),
-        11,
+        23,
         0,
         0
       )
@@ -33,8 +34,17 @@ export default function Home() {
 
     return Math.floor(tenAmUtcToday.getTime() / 1000);
   }
+  function convertUnixToDateFnsString(unixTime: any) {
+    const date = new Date(unixTime * 1000); // Multiply by 1000 to convert seconds to milliseconds
+    return format(date, "yyyy-MM-dd HH:mm:ss XXX"); // Custom format
+  }
+
+  // // Example usage:
+  const unixTime = 1627889180; // Example Unix timestamp
+  const dateFnsString = convertUnixToDateFnsString(1718643600);
+  console.log(dateFnsString); //getUnixTimeTenAmUtcToday());
   // console.log(new Date(1718532000));
-  console.log(getUnixTimeTenAmUtcToday());
+  // console.log(getUnixTimeTenAmUtcToday());
   // console.log(getUnixTimeFiveMinutesFromNow());
 
   // console.log(result.data);

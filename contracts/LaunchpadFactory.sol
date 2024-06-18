@@ -212,8 +212,6 @@ contract LaunchpadFactory {
         MintPhase memory publicPhase = MintPhase(_publicMint, 0.01 ether, _publicLimit, 0);
         
         HorrorApeClub newCollection = new HorrorApeClub(
-           To create an NFT launchpad with customizable minting phases (Whitelist, FCFS, Public), you need to design a flexible contract system that allows users to select and configure their desired minting tiers and their respective settings. Here's a more comprehensive implementation, improving the `HorrorApeClub` contract and adding a factory contract to handle different minting configurations.
-
 ### Updated HorrorApeClub Contract
 
 This contract includes multiple minting phases and supports customization for each phase, including pricing and mint limits.

@@ -1,10 +1,9 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { mainnet } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import { mintMainnet, mintSepoliaTestnet } from "@/constants/customChains";
+import { mintMainnet } from "@/constants/customChains";
 import { Toaster } from "@/components/ui/toaster";
 
 const config = createConfig(
