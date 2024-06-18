@@ -41,7 +41,7 @@ const Public = () => {
   const [mintDone, setMintDone] = useState<any | unknown>(true);
   const [mintAmount, setMintAmount] = useState(10);
   const [totalSupply, setTotalSupply] = useState(0);
-  const [amount, setAmount] = useState(5);
+  const [amount, setAmount] = useState(1);
 
   useEffect(() => {
     //@ts-ignore
