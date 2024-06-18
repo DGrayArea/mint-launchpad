@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 
 const Public = () => {
   const { toast } = useToast();
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
   const { writeContract } = useWriteContract();
 
   const result = useReadContract({
@@ -58,6 +58,12 @@ const Public = () => {
 
   const callMint = () => {
     console.log("Clicked");
+    if(chainId !== 185){
+           toast({
+        title: "Wrong Chain",
+        description: "Please connect to the Mint mainnet blockchain before minting",
+      });
+    }else {
     if (Number(mintAmountLeft?.data) > 0) {
       toast({
         title: "Error Minting",
@@ -82,7 +88,7 @@ const Public = () => {
         );
       }
     }
-  };
+  }};
 
   return (
     <div>
