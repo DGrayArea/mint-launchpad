@@ -98,7 +98,7 @@ const Public = () => {
             FREE
           </span>
           <span className="text-base lg:text-lg text-neutral-400 sm:ml-3.5">
-            ({mintAmount ? mintAmount : 0}/1)
+            ({mintAmount ? mintAmount : 0}/5)
           </span>
         </div>
         <span className="block absolute bottom-full translate-y-2.5 py-1 px-1.5 bg-[#111827] text-xs lg:text-sm text-neutral-400">
