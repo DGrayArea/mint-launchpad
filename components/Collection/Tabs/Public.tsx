@@ -39,7 +39,7 @@ const Public = () => {
 
   //@ts-ignore
   const [mintDone, setMintDone] = useState<any | unknown>(true);
-  const [mintAmount, setMintAmount] = useState(10);
+  const [mintAmount, setMintAmount] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
   const [amount, setAmount] = useState(1);
 
@@ -91,7 +91,7 @@ const Public = () => {
       }
     }
   };
-
+  console.log(mintAmount);
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-baseline p-5 lg:p-6 border-2 border-green-500 rounded-xl relative mb-3">
@@ -145,7 +145,7 @@ const Public = () => {
         />
       </div>
       <div className="border-b-[0.3px] border-b-white w-full mt-4 mb-8" />
-      {mintDone || mintAmount === 5 ? (
+      {mintDone || mintAmount >= 5 ? (
         <button
           disabled
           className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-not-allowed disabled:bg-opacity-70 bg-yellow-400 hover:bg-yellow-700 text-neutral-50 flex-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-6000 dark:focus:ring-offset-0"
