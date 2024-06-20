@@ -2,7 +2,6 @@ import { contract } from "@/config";
 import { abi } from "@/config/Abi";
 import { useEffect, useState } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { parseEther } from "viem";
 import { Input } from "@/components/ui/input";
@@ -65,20 +64,26 @@ const Public = () => {
           "Please connect to the Mint mainnet blockchain before minting",
       });
     } else {
-      if (Number(mintAmountLeft?.data) > 0) {
+      if (Number(mintAmountLeft?.data) >= 5) {
         toast({
           title: "Error Minting",
           description: "Minting Limit Exceeded",
         });
       } else {
-        writeContract({
-          abi,
-          address: contract,
-          functionName: "mint",
-          args: [amount],
-          value: parseEther(String(Number(amount * 0.00078))),
-        });
-        if (isWhitelisted.data) {
+        if (amount + Number(mintAmountLeft?.data) > 5) {
+          toast({
+            title: "Error Minting",
+            description:
+              "Total amount will Exceeded Limit adjust your mint amount",
+          });
+        } else {
+          writeContract({
+            abi,
+            address: contract,
+            functionName: "mint",
+            args: [amount],
+            value: parseEther(String(Number(amount * 0.00078))),
+          });
           setTimeout(
             () =>
               toast({
