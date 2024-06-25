@@ -16,26 +16,22 @@ contract NftBase is ERC721Enumerable, Ownable, ReentrancyGuard {
     }
 
     string baseURI;
-    string public baseExtension = ".json";
-    string public notRevealedUri;
 
     bool public paused = false;
-    bool public revealed = false;
 
-    uint256 public maxSupply = 3333;
+    uint256 public maxSupply;
 
     MintPhase public whitelistPhase;
     MintPhase public fcfsPhase;
     MintPhase public publicPhase;
 
     mapping(address => bool) public whitelist;
-    mapping(address => uint256) public whitelistMinted;
     mapping(address => bool) public fcfsListed;
+    mapping(address => uint256) public whitelistMinted;
     mapping(address => uint256) public fcfsMinted;
-    mapping(address => bool) public publicListed;
     mapping(address => uint256) public publicMinted;
 
-    uint256 public platformFee = 0.01 ether;
+    uint256 public platformFee = 0.00079 ether;
 
     constructor(
         string memory _name,
@@ -58,7 +54,6 @@ contract NftBase is ERC721Enumerable, Ownable, ReentrancyGuard {
         fcfsPhase = MintPhase(_fcfsMintActive, _fcfsPrice, _fcfsLimit, 0);
         publicPhase = MintPhase(_publicMintActive, _publicPrice, _publicLimit, 0);
         maxSupply = _maxSupply;
-        transferOwnership(_creator);
         setBaseURI(_initBaseURI);
         setNotRevealedURI(_initNotRevealedUri);
     }
@@ -67,40 +62,48 @@ contract NftBase is ERC721Enumerable, Ownable, ReentrancyGuard {
         return baseURI;
     }
 
-    function mint(uint256 _mintAmount) public payable nonReentrant {
-        uint256 supply = totalSupply();
-        require(!paused, "Minting is currently paused");
-        require(_mintAmount > 0, "Mint amount must be more than zero");
-        require(supply + _mintAmount <= maxSupply, "Max supply reached");
+function mint(uint256 _mintAmount) public payable nonReentrant {
+    uint256 supply = totalSupply();
+    require(!paused, "Minting is currently paused");
+    require(_mintAmount > 0, "Mint amount must be more than zero");
+    require(supply + _mintAmount <= maxSupply, "Max supply reached");
 
-        if (msg.sender != owner()) {
-            if (whitelistPhase.isActive && whitelist[msg.sender]) {
-                require(whitelistPhase.minted + _mintAmount <= whitelistPhase.limit, "WL Minting limit exceeded");
-                require(msg.value >= whitelistPhase.price * _mintAmount, "Insufficient funds for whitelist mint");
-                whitelistPhase.minted += _mintAmount;
-                whitelistMinted[msg.sender] += _mintAmount;
-            } else if (fcfsPhase.isActive) {
-                require(fcfsPhase.minted + _mintAmount <= fcfsPhase.limit, "FCFS Minting limit exceeded");
-                require(msg.value >= fcfsPhase.price * _mintAmount, "Insufficient funds for FCFS mint");
-                fcfsPhase.minted += _mintAmount;
-                fcfsMinted[msg.sender] += _mintAmount;
-            } else if (publicPhase.isActive) {
-                require(publicPhase.minted + _mintAmount <= publicPhase.limit, "Public Minting limit exceeded");
-                require(msg.value >= (publicPhase.price * _mintAmount + platformFee), "Insufficient funds for public mint");
-                publicPhase.minted += _mintAmount;
-                publicMinted[msg.sender] += _mintAmount;
-            } else {
-                revert("No active mint phase");
-            }
+    if (msg.sender != owner()) {
+        bool phaseFound = false;
 
+        if (whitelistPhase.isActive && whitelist[msg.sender]) {
+            phaseFound = true;
+            require(whitelistPhase.minted + _mintAmount <= whitelistPhase.limit, "WL Minting limit exceeded");
+            require(msg.value >= whitelistPhase.price * _mintAmount, "Insufficient funds for whitelist mint");
+            whitelistPhase.minted += _mintAmount;
+            whitelistMinted[msg.sender] += _mintAmount;
+        }
 
-            _safeMint(msg.sender, supply + _mintAmount);
-        } else {
-            for (uint256 i = 1; i <= _mintAmount; i++) {
-                _safeMint(msg.sender, supply + i);
-            }
+        if (!phaseFound && fcfsPhase.isActive) {
+            phaseFound = true;
+            require(fcfsPhase.minted + _mintAmount <= fcfsPhase.limit, "FCFS Minting limit exceeded");
+            require(msg.value >= fcfsPhase.price * _mintAmount, "Insufficient funds for FCFS mint");
+            fcfsPhase.minted += _mintAmount;
+            fcfsMinted[msg.sender] += _mintAmount;
+        }
+
+        if (!phaseFound && publicPhase.isActive) {
+            phaseFound = true;
+            require(publicPhase.minted + _mintAmount <= publicPhase.limit, "Public Minting limit exceeded");
+            require(msg.value >= (publicPhase.price * _mintAmount + platformFee), "Insufficient funds for public mint");
+            publicPhase.minted += _mintAmount;
+            publicMinted[msg.sender] += _mintAmount;
+        }
+
+        require(phaseFound, "No active mint phase or not eligible for any active phase");
+
+        _safeMint(msg.sender, supply + _mintAmount);
+    } else {
+        for (uint256 i = 1; i <= _mintAmount; i++) {
+            _safeMint(msg.sender, supply + i);
         }
     }
+}
 
     function addToWhitelist(address[] calldata addresses) public onlyOwner {
         for (uint256 i = 0; i < addresses.length; i++) {
@@ -113,6 +116,19 @@ contract NftBase is ERC721Enumerable, Ownable, ReentrancyGuard {
             whitelist[addresses[i]] = false;
         }
     }
+
+    function addToFCFS(address[] calldata addresses) public onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            fcfsListed[addresses[i]] = true;
+        }
+    }
+
+    function removeFromFCFS(address[] calldata addresses) public onlyOwner {
+        for (uint256 i = 0; i < addresses.length; i++) {
+            fcfsListed[addresses[i]] = false;
+        }
+    }
+
 
     function setPhaseState(
         string memory phase, 
@@ -129,6 +145,17 @@ contract NftBase is ERC721Enumerable, Ownable, ReentrancyGuard {
         }
     }
 
+
+    function setMintPhases(
+        bool whitelistActive,
+        bool fcfsActive,
+        bool publicActive
+    ) public onlyOwner {
+        whitelistPhase.isActive = whitelistActive;
+        fcfsPhase.isActive = fcfsActive;
+        publicPhase.isActive = publicActive;
+    }
+
     function walletOfOwner(address _owner) public view returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory tokenIds = new uint256[](ownerTokenCount);
@@ -138,32 +165,11 @@ contract NftBase is ERC721Enumerable, Ownable, ReentrancyGuard {
         return tokenIds;
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-
-        if (revealed == false) {
-            return notRevealedUri;
-        }
-
-        string memory currentBaseURI = _baseURI();
-        return bytes(currentBaseURI).length > 0 ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension)) : "";
-    }
 
     // only owner
-    function reveal() public onlyOwner {
-        revealed = true;
-    }
-
-    function setNotRevealedURI(string memory _notRevealedURI) public onlyOwner {
-        notRevealedUri = _notRevealedURI;
-    }
 
     function setBaseURI(string memory _newBaseURI) public onlyOwner {
         baseURI = _newBaseURI;
-    }
-
-    function setBaseExtension(string memory _newBaseExtension) public onlyOwner {
-        baseExtension = _newBaseExtension;
     }
 
     function pause(bool _state) public onlyOwner {
