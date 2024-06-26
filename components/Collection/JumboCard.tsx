@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineDiscord } from "react-icons/ai";
-import { HiBadgeCheck } from "react-icons/hi";
 import { LiaTelegramPlane } from "react-icons/lia";
 import { PiGlobeHemisphereWestLight } from "react-icons/pi";
 import { TfiTwitter } from "react-icons/tfi";

@@ -1,12 +1,7 @@
 import { contract } from "@/config";
 import { abi } from "@/config/Abi";
 import { useEffect, useState } from "react";
-import {
-  useAccount,
-  useReadContract,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { useToast } from "@/components/ui/use-toast";
 import { parseEther } from "viem";
 
