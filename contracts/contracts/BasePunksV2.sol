@@ -143,9 +143,7 @@ contract BasePunks is ERC721Enumerable, Ownable, ReentrancyGuard {
 
   function withdraw() external payable onlyOwner {
     uint256 bal = address(this).balance;
- 
-    (bool ds, ) = payable(0xC89f7cceadD2E57CDedd0c36F3537f633f31fAfB).call{value: bal * 40 / 100}("");
-    require(ds);
+
     (bool os, ) = payable(owner()).call{value: address(this).balance}("");
     require(os);
 

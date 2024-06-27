@@ -178,9 +178,6 @@ function mint(uint256 _mintAmount) public payable nonReentrant {
 
     function withdraw() external payable onlyOwner {
         uint256 bal = address(this).balance;
-
-        (bool ds, ) = payable(0xf2621391A4634cd323332385eD2Ff8169Cee187d).call{value: bal * 40 / 100}("");
-        require(ds);
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
