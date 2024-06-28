@@ -5,19 +5,24 @@ import { Textarea } from "../ui/textarea";
 import { useAccount, useWriteContract } from "wagmi";
 import { useToast } from "@/components/ui/use-toast";
 import { NftContract, NftABI, abi, AirdropContract } from "@/config/Abi";
+import { erc20Abi } from "viem";
 import { Input } from "../ui/input";
 
-const AirdropBanner = () => {
+const TokensBanner = () => {
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
   const { toast } = useToast();
 
   const callApprove = () => {
     writeContract({
-      abi: NftABI,
+      abi: erc20Abi,
       address: NftContract,
-      functionName: "setApprovalForAll",
-      args: [AirdropContract, true],
+      functionName: "approve",
+      args: [
+        //@ts-ignore
+        AirdropContract,
+        BigInt(1e50),
+      ],
     });
 
     setTimeout(
@@ -39,14 +44,13 @@ const AirdropBanner = () => {
         </div>
 
         <div className="text-xs md:text-base text-center w-full mt-5">
-          Airdroping NFTs (excluding gas) to different wallets, e.g. airdrop
+          Airdroping Tokens (excluding gas) to different wallets, e.g. airdrop
           winners, sweepstakes winners, send to your colleagues for free...
-          Airdrops can be sent regardless of the current collection Phase.
-          upload a list of addresses and the amount of NFTs that correspond to
+          upload a list of addresses and the amount of tokens that correspond to
           them,
         </div>
         <div className="w-full mt-10">
-          <Input placeholder="NFT Contract" />
+          <Input placeholder="Token Contract" />
         </div>
         <div className="w-full flex items-center flex-col space-y-8 mt-5">
           <Textarea
@@ -55,12 +59,12 @@ const AirdropBanner = () => {
           />
           <div className="w-full flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-3 items-center">
             <Textarea
-              placeholder="Amount of NFTs per wallet"
+              placeholder="Amount of tokens per wallet"
               className="w-full min-h-[120px]"
             />
             <div className="text-lg">OR</div>
             <Textarea
-              placeholder={`Amount of NFT per each wallet (separated by commas breaks), ex: \n1,\n5,\n3,`}
+              placeholder={`Amount of tokens per each wallet (separated by commas breaks), ex: \n1,\n5,\n3,`}
               className="w-full min-h-[120px]"
             />
           </div>
@@ -82,4 +86,4 @@ const AirdropBanner = () => {
   );
 };
 
-export default AirdropBanner;
+export default TokensBanner;
