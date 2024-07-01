@@ -44,16 +44,17 @@ import data from "@/config/json/TotalHolders.json";
 
 //   return ownerList;
 // };
-
+//@ts-ignore
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       // Parse the JSON data
       const nftHolders = JSON.parse(JSON.stringify(data));
       const skipIds = [5326, 5727, 6728, 6729];
-
+      //@ts-ignore
       function distributeNftIds(holders, startId, skipIds) {
         let currentId = startId;
+        //@ts-ignore
         const distributedHolders = holders.map((holder) => {
           const holderTokenIds = [];
           for (let i = 0; i < holder.tokenCount; i++) {
