@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Poppins } from "next/font/google";
 import nftHolders from "@/config/json/nftDistribution.json";
 import { useWriteContract } from "wagmi";
-import { NftContract } from "@/config/Abi";
+import { AirdropContractABI, NftContract } from "@/config/Abi";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -267,16 +267,16 @@ export default function Admin() {
       const tokensForRecipients = [];
 
       for (const holder of nftHolders) {
-        recipients.push(holder.owner);
+        recipients.push(String(holder.owner));
         tokensForRecipients.push(holder.tokens);
       }
       console.log(recipients, tokensForRecipients);
       writeContract({
-        abi: nftAirdropAbi,
+        abi: AirdropContractABI,
         //@ts-ignore
-        contract: nftAirdropContractAddress,
-        functionName: "airdropNFTs",
-        args: [NftContract, recipients, tokensForRecipients],
+        contract: "0x30c5151E9bfc8D8B861f3bc364d7Dd810D9BA636",
+        functionName: "airdropNFTsInBatches",
+        args: [NftContract, recipients, tokensForRecipients, 5],
       });
     } catch (error) {
       console.log(`Error: ${error}`);
