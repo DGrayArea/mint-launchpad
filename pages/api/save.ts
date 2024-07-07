@@ -1,7 +1,7 @@
 // pages/api/saveNftHolders.js
 import fs from "fs";
 import path from "path";
-import data from "@/config/json/TotalHolders.json";
+import data from "@/data2.json";
 
 //5-9k
 // const owned = [5326, 5727, 6728, 6729];
@@ -49,36 +49,74 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       // Parse the JSON data
-      const nftHolders = JSON.parse(JSON.stringify(data));
-      const skipIds = [5326, 5727, 6728, 6729];
-      //@ts-ignore
-      function distributeNftIds(holders, startId, skipIds) {
-        let currentId = startId;
-        //@ts-ignore
-        const distributedHolders = holders.map((holder) => {
-          const holderTokenIds = [];
-          for (let i = 0; i < holder.tokenCount; i++) {
-            while (skipIds.includes(currentId)) {
-              currentId++;
-            }
-            holderTokenIds.push(currentId);
-            currentId++;
-          }
-          return {
-            ...holder,
-            tokens: holderTokenIds,
-          };
-        });
-        return distributedHolders;
+      // const nftHolders = JSON.parse(JSON.stringify(data));
+      // const skipIds = [5326, 5727, 6728, 6729];
+      // //@ts-ignore
+      // function distributeNftIds(holders, startId, skipIds) {
+      //   let currentId = startId;
+      //   //@ts-ignore
+      //   const distributedHolders = holders.map((holder) => {
+      //     const holderTokenIds = [];
+      //     for (let i = 0; i < holder.tokenCount; i++) {
+      //       while (skipIds.includes(currentId)) {
+      //         currentId++;
+      //       }
+      //       holderTokenIds.push(currentId);
+      //       currentId++;
+      //     }
+      //     return {
+      //       ...holder,
+      //       tokens: holderTokenIds,
+      //     };
+      //   });
+      //   return distributedHolders;
+      // }
+
+      // const updatedHolders = distributeNftIds(nftHolders, 5000, skipIds);
+      const chunkSize = Math.ceil(data.recipients.length / 10);
+
+      // Split the data into chunks and write to files
+      for (let i = 0; i < 10; i++) {
+        const start = i * chunkSize;
+        const end = start + chunkSize;
+
+        const chunkRecipients = data.recipients.slice(start, end);
+        const chunkTokensForRecipients = data.tokensForRecipients.slice(
+          start,
+          end
+        );
+
+        const chunkData = {
+          recipients: chunkRecipients,
+          tokensForRecipients: chunkTokensForRecipients,
+        };
+
+        const filePath = path.join(
+          process.cwd(),
+          "public",
+          `data_chunk_${i + 1}.json`
+        );
+        fs.writeFileSync(filePath, JSON.stringify(chunkData, null, 2));
+
+        console.log(`Data chunk ${i + 1} written to ${filePath}`);
       }
+      // const recipients = [];
+      // const tokensForRecipients = [];
 
-      const updatedHolders = distributeNftIds(nftHolders, 5000, skipIds);
+      // const updatedHolders = { recipients, tokensForRecipients };
 
-      const filePath = path.join(process.cwd(), "nftDistribution.json");
-      fs.writeFile(filePath, JSON.stringify(updatedHolders, null, 2), (err) => {
-        if (err) throw err;
-        console.log("Data saved to nft_holders.json");
-      });
+      // for (const holder of data) {
+      //   recipients.push(String(holder.owner));
+      //   const tokenStrings = holder.tokens.map((item) => String(item));
+
+      //   tokensForRecipients.push(tokenStrings);
+      // }
+
+      // const filePath = path.join(process.cwd(), "data2.json");
+      // fs.writeFile(filePath, JSON.stringify(updatedHolders, null, 2), (err) => {
+      //   if (err) throw err;
+      //   console.log("Data saved to dataa.json");
+      // });
       //   const totalTokenCount = jsonArray.reduce((total, item) => {
       //     return total + item.tokenCount;
       //   }, 0);

@@ -5,6 +5,7 @@ import { Poppins } from "next/font/google";
 import nftHolders from "@/config/json/nftDistribution.json";
 import { useWriteContract } from "wagmi";
 import { AirdropContractABI, NftContract } from "@/config/Abi";
+import data from "../data.json";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -282,7 +283,7 @@ export default function Admin() {
       console.log(`Error: ${error}`);
     }
   };
-
+  console.log(data.recipients.length, data.tokensForRecipients.length);
   return (
     <main
       className={`flex min-h-screen flex-col items-center text-white bg-[#0b0f19] ${font.className} w-full`}
