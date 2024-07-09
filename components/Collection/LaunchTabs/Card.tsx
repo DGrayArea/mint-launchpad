@@ -11,9 +11,24 @@ import Whitelist from "./Tabs/Whitelist";
 import Fcfs from "./Tabs/Fcfs";
 import Public from "./Tabs/Public";
 import { contract } from "@/config";
+import { useState } from "react";
 
 const Card = () => {
   const { currentTab, setCurrentTab } = useMintTab();
+  const [socials, setSocials] = useState({
+    website: "",
+    twitter: "",
+    telegram: "",
+    discord: "",
+  });
+  const [totalSupply, setTotalSupply] = useState(0);
+  const [maxSupply, setMaxSupply] = useState(0);
+  // const [socials, setSocials] = useState({
+  //   website: "https://punkverse.xyz",
+  //   twitter: "https://x.com/PunkonMint?s=09",
+  //   telegram: "https://t.me/punkshield",
+  //   discord: "https://discord.com/punk",
+  // });
   return (
     <div className="bg-[#111827] rounded-3xl overflow-hidden relative shadow-2xl drop-shadow-2xl py-4 px-5 lg:py-8 lg:px-10 p-4 w-full">
       <div className="text-2xl lg:text-3xl lg:leading-[2.5rem] 2xl:text-4xl 2xl:leading-[3rem] font-extrabold flex items-end gap-2.5 whitespace-nowrap min-w-[200px] w-full">
@@ -54,65 +69,43 @@ const Card = () => {
           </div>
         </div>
 
-        <div className="hidden lg:flex flex-row space-x-2 items-center">
-          <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="https://discord.com/invite/punkecosystem"
-            target="_blank"
-          >
-            <AiOutlineDiscord size={25} />
-          </Link>
-          {/* <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="#"
-            target="_blank"
-          >
-            <LiaTelegramPlane size={24} />
-          </Link> */}
-          <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="https://x.com/PunkonMint?s=09"
-            target="_blank"
-          >
-            <TfiTwitter size={22} />
-          </Link>
-          {/* <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="#"
-            target="_blank"
-          >
-            <PiGlobeHemisphereWestLight size={24} />
-          </Link> */}
-        </div>
-        <div className="flex lg:hidden flex-row space-x-2 items-center w-full">
-          <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="https://discord.com/invite/punkecosystem"
-            target="_blank"
-          >
-            <AiOutlineDiscord size={16} />
-          </Link>
-          {/* <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="#"
-            target="_blank"
-          >
-            <LiaTelegramPlane size={16} />
-          </Link> */}
-          <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="https://x.com/PunkonMint?s=09"
-            target="_blank"
-          >
-            <TfiTwitter size={16} />
-          </Link>
-          {/* <Link
-            className="p-1.5 bg-gray-500/50 rounded-full"
-            href="#"
-            target="_blank"
-          >
-            <PiGlobeHemisphereWestLight size={16} />
-          </Link> */}
+        <div className="flex flex-row space-x-2 items-center">
+          {socials.website ? (
+            <Link
+              className="p-1.5 bg-gray-500/50 rounded-full"
+              href={socials.website}
+              target="_blank"
+            >
+              <PiGlobeHemisphereWestLight size={22} />
+            </Link>
+          ) : null}
+          {socials.twitter ? (
+            <Link
+              className="p-1.5 bg-gray-500/50 rounded-full"
+              href={socials.twitter}
+              target="_blank"
+            >
+              <TfiTwitter size={20} />
+            </Link>
+          ) : null}
+          {socials.telegram ? (
+            <Link
+              className="p-1.5 bg-gray-500/50 rounded-full"
+              href={socials.telegram}
+              target="_blank"
+            >
+              <LiaTelegramPlane size={22} />
+            </Link>
+          ) : null}
+          {socials.discord ? (
+            <Link
+              className="p-1.5 bg-gray-500/50 rounded-full"
+              href={socials.discord}
+              target="_blank"
+            >
+              <AiOutlineDiscord size={23} />
+            </Link>
+          ) : null}
         </div>
       </div>
 
@@ -143,11 +136,11 @@ const Card = () => {
         </div>
       </div>
       {currentTab === "Whitelist" ? (
-        <Whitelist />
+        <Whitelist totalSupply={totalSupply} maxSupply={maxSupply} />
       ) : currentTab === "FCFS" ? (
-        <Fcfs />
+        <Fcfs totalSupply={totalSupply} maxSupply={maxSupply} />
       ) : (
-        <Public />
+        <Public totalSupply={totalSupply} maxSupply={maxSupply} />
       )}
     </div>
   );

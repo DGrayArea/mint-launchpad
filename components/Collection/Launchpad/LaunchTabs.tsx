@@ -16,14 +16,14 @@ const LaunchTabs = ({
         >
           Mint
         </div>
-        {/* <div
+        <div
           onClick={() => setCurrentTab("CheckWL")}
           className={`font-semibold lg:font-bold text-sm md:text-lg lg:text-xl flex flex-row items-center justify-center w-[150px] lg:w-[150px] md:w-[250px] px-5 py-3 rounded-xl cursor-pointer transition-all ease-in-out duration-75 ${
             tab === "CheckWL" ? "bg-[#111827]" : "bg-none"
           }`}
         >
           Check WL
-        </div> */}
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,6 @@ import Card from "./Card";
 import Link from "next/link";
 
 const Photo = () => {
-  const contract = "0xCol";
   return (
     <div className="relative flex lg:ml-[25%] justify-center items-center px-3 lg:pb-0">
       <div className="absolute lg:-left-[500px] -left-0 lg:top-[7%] top-[37%] md:top-[44%] lg:ml-[10%] transition-all w-full px-3.5">
@@ -29,4 +28,3 @@ const Photo = () => {
 };
 
 export default Photo;
-// lg:top-[8%] xs:-bottom-[63%] sm:-bottom-[40%] -bottom-[0%] md:-bottom-[40%]

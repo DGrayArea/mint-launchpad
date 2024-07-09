@@ -4,8 +4,15 @@ import { useEffect, useState } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { useToast } from "@/components/ui/use-toast";
 import { parseEther } from "viem";
+import { MintConnect } from "../../Launchpad/MintConnect";
 
-const Whitelist = () => {
+const Whitelist = ({
+  totalSupply,
+  maxSupply,
+}: {
+  totalSupply: number | string;
+  maxSupply: number | string;
+}) => {
   const { toast } = useToast();
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
@@ -37,17 +44,23 @@ const Whitelist = () => {
 
   //@ts-ignore
   const [mintDone, setMintDone] = useState<any | unknown>(true);
-  const [mintAmount, setMintAmount] = useState(10);
-  const [totalSupply, setTotalSupply] = useState(0);
+  const [mintAmount, setMintAmount] = useState(1);
+  const [mintClosed, setMintClosed] = useState(true);
+  const [limit, setLimit] = useState(0);
+  const [free, setFree] = useState(false);
+  const [cost, setCost] = useState(0.0078);
+  const [percentage, setPercentage] = useState(
+    isNaN(Number(totalSupply) / Number(maxSupply))
+      ? 0
+      : Number(totalSupply) / Number(maxSupply)
+  );
 
   useEffect(() => {
     //@ts-ignore
     if (result.data && supply && mintAmountLeft) {
       //setMintDone(!result?.data[0]);
       //@ts-ignore
-      setMintDone(!result?.data[0]);
       //@ts-ignore
-      setTotalSupply(Number(supply?.data));
       //@ts-ignore
       setMintAmount(Number(mintAmountLeft?.data));
     }
@@ -88,70 +101,32 @@ const Whitelist = () => {
     }
   };
 
-  // const callWhitelist = async () => {
-  //   const getProviderAndSigner = () => {
-  //     const provider = new ethers.JsonRpcProvider("https://rpc.mintchain.io");
-
-  //     // Get the private key from the environment variable
-  //     const privateKey =
-  //       "";
-
-  //     if (!privateKey) {
-  //       throw new Error("Private key is not defined in environment variables");
-  //     }
-
-  //     // Create a wallet instance with the private key and provider
-  //     const wallet = new ethers.Wallet(privateKey, provider);
-
-  //     return { provider, signer: wallet };
-  //   };
-
-  //   try {
-  //     const { signer } = getProviderAndSigner();
-  //     const contractC = new ethers.Contract(contract, abi, signer);
-
-  //     // Replace `yourFunctionName` with the actual function name and add any parameters if required
-  //     const tx = await contractC.addToFCFS([]);
-
-  //     // Wait for the transaction to be mined
-  //     const receipt = await tx.wait();
-  //     console.log("Transaction successful with hash:", receipt.transactionHash);
-  //   } catch (error) {
-  //     console.error("Error calling contract function:", error);
-  //   }
-
-  //   // writeContract({
-  //   //   abi,
-  //   //   address: contract,
-  //   //   functionName: "addToWhitelist",
-  //   //   args: [["0xa31420f5bc6cf8a9d4ac7b6132b7fc2f93546fab"]],
-  //   // });
-  // };
-
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-baseline p-5 lg:p-6 border-2 border-green-500 rounded-xl relative mb-3">
         <div>
-          <span className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-green-500">
-            FREE
+          <span className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-green-500">
+            {free ? "FREE" : `${cost} ETH`}
           </span>
-          <span className="text-base lg:text-lg text-neutral-400 sm:ml-3.5">
-            ({mintAmount ? mintAmount : 0}/1)
+          <span className="text-base lg:text-lg text-neutral-400 ml-3.5">
+            {free
+              ? `(${mintAmount ? mintAmount : 0}/1)`
+              : `(${totalSupply}/${maxSupply})`}
           </span>
         </div>
         <span className="block absolute bottom-full translate-y-2.5 py-1 px-1.5 bg-[#111827] text-xs lg:text-sm text-neutral-400">
           Mint Price Of <span className="text-xs text-blue-500">Whitelist</span>
         </span>
         <div className="bg-blue-500/30 text-blue-200 w-fit p-2 rounded-md text-xs lg:text-sm absolute top-2 right-2">
-          Total: 10000 NFTs
+          Total: {maxSupply} NFTs
         </div>
       </div>
       {mintDone ? (
-        <span className="leading-none mt-10 font-semibold text-red-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
+        <span className="leading-none mt-10 font-bold text-red-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
           Whitelist minting done, switch to FCFS tab
         </span>
       ) : (
-        <span className="leading-none mt-10 font-semibold text-green-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
+        <span className="leading-none mt-10 font-bold text-green-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
           Whitelist minting ongoing
         </span>
       )}
@@ -163,36 +138,50 @@ const Whitelist = () => {
       <div className="w-full bg-gray-300 rounded-full dark:bg-gray-700 relative h-[22px] overflow-hidden mt-1">
         <div
           className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full h-full transition-all duration-75"
-          style={{ width: `${(totalSupply / 10000) * 100}%` }}
+          style={{
+            width: `${percentage * 100}%`,
+          }}
         >
           <p className="absolute top-0 right-0 bottom-0 left-0 m-auto p-1.5 text-white transition-all duration-75">
-            <b>{(totalSupply / 10000) * 100}%</b> ({totalSupply}/10000)
+            <b>{percentage * 100}%</b> ({Number(totalSupply)}/{" "}
+            {Number(maxSupply)})
           </p>
         </div>
       </div>
 
       <div className="border-b-[0.3px] border-b-white w-full my-8" />
-      {mintDone || mintAmount === 1 ? (
-        <button
-          disabled
-          className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-not-allowed disabled:bg-opacity-70 bg-red-400 hover:bg-red-700 text-neutral-50 flex-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-6000 dark:focus:ring-offset-0"
-        >
-          Sold out
-        </button>
+      {address ? (
+        <>
+          {mintDone || mintAmount === 1 ? (
+            <button
+              disabled
+              className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-not-allowed disabled:bg-opacity-70 bg-red-400 hover:bg-red-700 text-neutral-50 flex-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-6000 dark:focus:ring-offset-0"
+            >
+              Sold out
+            </button>
+          ) : (
+            <>
+              {mintClosed ? (
+                <button
+                  disabled
+                  className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-yellow-400 active:bg-yellow-700 text-neutral-50 flex-1 delay-75"
+                >
+                  Minting Unavailable
+                </button>
+              ) : (
+                <button
+                  onClick={() => callMint()}
+                  className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-green-400 active:bg-green-700 text-neutral-50 flex-1 delay-75"
+                >
+                  Mint NFT
+                </button>
+              )}
+            </>
+          )}
+        </>
       ) : (
-        <button
-          onClick={() => callMint()}
-          className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-green-400 active:bg-green-700 text-neutral-50 flex-1 delay-75"
-        >
-          Mint NFT
-        </button>
+        <MintConnect />
       )}
-      {/* <button
-        onClick={() => callWhitelist()}
-        className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-green-400 active:bg-green-700 text-neutral-50 flex-1 delay-75"
-      >
-        Whitelist
-      </button> */}
     </div>
   );
 };
