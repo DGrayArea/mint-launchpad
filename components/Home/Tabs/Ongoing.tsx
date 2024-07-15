@@ -10,15 +10,15 @@ const Ongoing = ({ data }: { data: TabItem[] }) => {
       </div>
       <div className="flex w-full mx-auto justify-center items-center px-2">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center items-center mx-auto w-full gap-4 ml-0 lg:gap-10 mb-20 lg:ml-8">
-          {collectionData.map((item: CollectionType, index) => (
+          {data?.map((item: TabItem, index) => (
             <NFTCard
               key={index}
-              imageSrc={item.imageSrc}
-              title={item.title}
+              imageSrc={item.logoUri}
+              title={item.name}
               price={item.price}
-              items={item.items}
-              status={item.status}
-              contract={item.contract}
+              items={item.maxSupply}
+              status="Ongoing"
+              contract={item.contractAddress}
             />
           ))}
         </div>

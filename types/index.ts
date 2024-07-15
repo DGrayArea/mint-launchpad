@@ -39,6 +39,10 @@ export interface NftDataType {
 }
 
 export interface TabItem {
+  maxSupply: number;
+  price: string | number;
+  name: string;
+  symbol: string;
   backgroundUri: string;
   contractAddress: string;
   discord: string;
@@ -51,8 +55,8 @@ export interface TabItem {
 export interface CollectionType {
   imageSrc: string;
   title: string;
-  price: string;
-  items: string;
+  price: number | string;
+  items: number | string;
   status: string;
   contract: string;
 }

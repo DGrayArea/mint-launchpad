@@ -44,11 +44,14 @@ export const Tabs = () => {
               NFTCollection,
               Provider
             );
+            const price = 0.0077;
             const owner = await contract.owner();
             const supply = await contract.totalSupply();
             const maxSupply = await contract.maxSupply();
             const getSalePhases = await contract.getSalePhases();
             const ownerBalance = await contract.balanceOf(owner);
+            const name = await contract.name();
+            const symbol = await contract.symbol();
 
             const allSalesFalse =
               getSalePhases[0] === false &&
@@ -63,19 +66,19 @@ export const Tabs = () => {
                 ? true
                 : false;
             if (parseInt(supply) === 0 && allSalesFalse) {
-              upcome.push(item);
+              upcome.push({ ...item, name, symbol, maxSupply, price });
             } else if (parseInt(supply) > 0 && oneSaleOpen) {
-              ongone.push(item);
+              ongone.push({ ...item, name, symbol, maxSupply, price });
             } else if (parseInt(supply) === parseInt(maxSupply)) {
-              end.push(item);
+              end.push({ ...item, name, symbol, maxSupply, price });
             } else if (
               parseInt(ownerBalance) === parseInt(supply) &&
               allSalesFalse &&
               parseInt(supply) < parseInt(maxSupply)
             ) {
-              upcome.push(item);
+              upcome.push({ ...item, name, symbol, maxSupply, price });
             } else {
-              end.push(item);
+              end.push({ ...item, name, symbol, maxSupply, price });
             }
           })
         );
