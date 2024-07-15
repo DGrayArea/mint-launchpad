@@ -20,6 +20,15 @@ pragma solidity >=0.8.0;
         string backgroundUri;
     }
 
+    struct NFTEntry {
+        string website;
+        string x;
+        string telegram;
+        string discord;
+        string logoUri;
+        string backgroundUri;
+    }
+
     struct CollectionDetails {
         string website;
         string x;

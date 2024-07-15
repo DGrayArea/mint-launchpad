@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 const config = createConfig(
   getDefaultConfig({
     // Your dApps chains
-    chains: [mintMainnet],
+    chains: [mintMainnet, mintSepoliaTestnet],
     transports: {
       // RPC URL for each chain
       // [mainnet.id]: http(
@@ -40,8 +40,8 @@ export default function App({ Component, pageProps }: AppProps) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider>
-          <Component {...pageProps} />
           <Toaster />
+          <Component {...pageProps} />
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

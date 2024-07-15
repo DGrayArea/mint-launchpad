@@ -1965,6 +1965,15 @@ pragma solidity >=0.8.0;
         string backgroundUri;
     }
 
+    struct NFTEntry {
+        string website;
+        string x;
+        string telegram;
+        string discord;
+        string logoUri;
+        string backgroundUri;
+    }
+
     struct CollectionDetails {
         string website;
         string x;
@@ -2036,7 +2045,8 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
         address _feeAddress,
         uint256 _baseFee,
         address _creator
-    ) ERC721(_metadata.name, _metadata.symbol) Ownable(_creator) {
+    ) ERC721(_metadata.name, _metadata.symbol) Ownable(msg.sender) {
+        transferOwnership(_creator);
 
         whitelistPhase = MintPhase(
          false,
@@ -2263,7 +2273,7 @@ contract LaunchpadFactory is Ownable2Step {
     function createCollection(
         MetadataParams memory _metadata,
         SaleParams memory _saleParams,
-        NFTData memory _nftData,
+        NFTEntry memory _nftData,
         bool _isFreeMint,
         uint256 _maxSupply,
         address _creator
@@ -2302,10 +2312,6 @@ contract LaunchpadFactory is Ownable2Step {
         collections[_collectionAddress].discord = _discord;
         collections[_collectionAddress].logoUri = _logo;
         collections[_collectionAddress].backgroundUri = _background;
-    }
-
-    function getCollection(address _collectionContract) public view returns(NFTData memory) {
-        return collections[_collectionContract];
     }
 
     function getAllCollections() public view returns(NFTData[] memory) {

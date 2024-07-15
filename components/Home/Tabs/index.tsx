@@ -2,9 +2,92 @@ import { useTab } from "@/hooks/useTab";
 import Ongoing from "./Ongoing";
 import Upcoming from "./Upcoming";
 import Ended from "./Ended";
+import {
+  LaunchpadFactoryABI,
+  LaunchpadFactoryContract,
+  NFTCollection,
+} from "@/config/Abi";
+import { useAccount, useReadContract } from "wagmi";
+import { useEffect, useState } from "react";
+import { TabItem } from "@/types";
+import { ethers } from "ethers";
+import { provider, testnetProvider } from "@/config";
 
 export const Tabs = () => {
   const { currentTab, setCurrentTab } = useTab();
+  const { chainId } = useAccount();
+  const [ongoing, setOngoing] = useState<TabItem[]>([]);
+  const [upcoming, setupcoming] = useState<TabItem[]>([]);
+  const [ended, setEnded] = useState<TabItem[]>([]);
+
+  const { data: balance } = useReadContract({
+    abi: LaunchpadFactoryABI,
+    address: LaunchpadFactoryContract,
+    functionName: "getAllCollections",
+  });
+
+  useEffect(() => {
+    //@ts-ignore
+    if (balance?.length > 0) {
+      const arrangeData = async () => {
+        const ethersProvider = chainId === 185 ? provider : testnetProvider;
+        const Provider = new ethers.JsonRpcProvider(ethersProvider);
+        const upcome: TabItem[] = [];
+        const ongone: TabItem[] = [];
+        const end: TabItem[] = [];
+
+        await Promise.all(
+          //@ts-ignore
+          balance?.map(async (item: TabItem) => {
+            const contract = new ethers.Contract(
+              item.contractAddress,
+              NFTCollection,
+              Provider
+            );
+            const owner = await contract.owner();
+            const supply = await contract.totalSupply();
+            const maxSupply = await contract.maxSupply();
+            const getSalePhases = await contract.getSalePhases();
+            const ownerBalance = await contract.balanceOf(owner);
+
+            const allSalesFalse =
+              getSalePhases[0] === false &&
+              getSalePhases[1] === false &&
+              getSalePhases[2] === false
+                ? true
+                : false;
+            const oneSaleOpen =
+              getSalePhases[0] === true ||
+              getSalePhases[1] === true ||
+              getSalePhases[2] === true
+                ? true
+                : false;
+            if (parseInt(supply) === 0 && allSalesFalse) {
+              upcome.push(item);
+            } else if (parseInt(supply) > 0 && oneSaleOpen) {
+              ongone.push(item);
+            } else if (parseInt(supply) === parseInt(maxSupply)) {
+              end.push(item);
+            } else if (
+              parseInt(ownerBalance) === parseInt(supply) &&
+              allSalesFalse &&
+              parseInt(supply) < parseInt(maxSupply)
+            ) {
+              upcome.push(item);
+            } else {
+              end.push(item);
+            }
+          })
+        );
+        setupcoming(upcome);
+        setOngoing(ongone);
+        setEnded(end);
+      };
+      arrangeData();
+    } else {
+      console.log("GOT NONE");
+    }
+  }, [balance, chainId]);
 
   return (
     <div className="flex flex-col w-full px-0">
@@ -39,11 +122,11 @@ export const Tabs = () => {
 
       <div className="px-2 lg:px-6 mt-5 md:mt-7 lg:mt-10 w-full">
         {currentTab === "Ongoing" ? (
-          <Ongoing />
+          <Ongoing data={ongoing} />
         ) : currentTab === "Upcoming" ? (
-          <Upcoming />
+          <Upcoming data={upcoming} />
         ) : (
-          <Ended />
+          <Ended data={ended} />
         )}
       </div>
     </div>

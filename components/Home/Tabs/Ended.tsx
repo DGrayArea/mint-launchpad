@@ -1,8 +1,8 @@
-import { CollectionType } from "@/types";
+import { CollectionType, TabItem } from "@/types";
 import NFTCard from "../NFTCard";
 import { collectionData } from "@/constants";
 
-const Ended = () => {
+const Ended = ({ data }: { data: TabItem[] }) => {
   return (
     <div className="w-full">
       <div className="font-extrabold text-2xl lg:text-4xl mb-7 md:mb-7 lg:mb-12 px-2">

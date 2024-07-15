@@ -2308,11 +2308,6 @@ export const LaunchpadFactoryABI = [
       {
         components: [
           {
-            internalType: "address",
-            name: "contractAddress",
-            type: "address",
-          },
-          {
             internalType: "string",
             name: "website",
             type: "string",
@@ -2343,7 +2338,7 @@ export const LaunchpadFactoryABI = [
             type: "string",
           },
         ],
-        internalType: "struct NFTData",
+        internalType: "struct NFTEntry",
         name: "_nftData",
         type: "tuple",
       },
@@ -2800,62 +2795,6 @@ export const LaunchpadFactoryABI = [
         internalType: "struct NFTData[]",
         name: "",
         type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_collectionContract",
-        type: "address",
-      },
-    ],
-    name: "getCollection",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "address",
-            name: "contractAddress",
-            type: "address",
-          },
-          {
-            internalType: "string",
-            name: "website",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "x",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "telegram",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "discord",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "logoUri",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "backgroundUri",
-            type: "string",
-          },
-        ],
-        internalType: "struct NFTData",
-        name: "",
-        type: "tuple",
       },
     ],
     stateMutability: "view",
@@ -4110,6 +4049,6 @@ export const NFTCollection = [
   },
 ];
 export const LaunchpadFactoryContract =
-  "0xa1008B392530dB2014659A55400d158e5d067834";
+  "0x2245eE85D5195f4c2EFd4521EC0fC09fc86E5C60";
 export const AirdropContract = "";
 export const NftContract = "0xF157ef41cD23a896fFeacC3dB694346E94BFCF10";
