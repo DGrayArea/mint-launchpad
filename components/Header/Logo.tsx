@@ -8,6 +8,7 @@ const Logo = () => {
       className="flex flex-row items-center font-extrabold text-lg md:text-3xl lg:text-3xl"
     >
       <Image
+        fetchPriority="high"
         src="/logo.png"
         width={80}
         height={80}

@@ -10,8 +10,8 @@ const Public = ({
   totalSupply,
   maxSupply,
 }: {
-  totalSupply: number | string;
-  maxSupply: number | string;
+  totalSupply: number | string | any;
+  maxSupply: number | string | any;
 }) => {
   const { toast } = useToast();
   const { address } = useAccount();

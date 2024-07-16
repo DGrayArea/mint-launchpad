@@ -10,8 +10,8 @@ const Whitelist = ({
   totalSupply,
   maxSupply,
 }: {
-  totalSupply: number | string;
-  maxSupply: number | string;
+  totalSupply: number | string | any;
+  maxSupply: number | string | any;
 }) => {
   const { toast } = useToast();
   const { address } = useAccount();
@@ -21,11 +21,6 @@ const Whitelist = ({
     abi,
     address: contract,
     functionName: "getSalePhases",
-  });
-  const supply = useReadContract({
-    abi,
-    address: contract,
-    functionName: "totalSupply",
   });
 
   const isWhitelisted = useReadContract({
@@ -57,14 +52,14 @@ const Whitelist = ({
 
   useEffect(() => {
     //@ts-ignore
-    if (result.data && supply && mintAmountLeft) {
+    if (result.data && totalSupply && mintAmountLeft) {
       //setMintDone(!result?.data[0]);
       //@ts-ignore
       //@ts-ignore
       //@ts-ignore
       setMintAmount(Number(mintAmountLeft?.data));
     }
-  }, [result, supply, mintAmountLeft]);
+  }, [result, totalSupply, mintAmountLeft]);
 
   const callMint = () => {
     if (isWhitelisted.data) {
@@ -102,7 +97,7 @@ const Whitelist = ({
   };
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex flex-col sm:flex-row items-baseline p-5 lg:p-6 border-2 border-green-500 rounded-xl relative mb-3">
         <div>
           <span className="text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-green-500">
@@ -121,19 +116,23 @@ const Whitelist = ({
           Total: {maxSupply} NFTs
         </div>
       </div>
-      {mintDone ? (
-        <span className="leading-none mt-10 font-bold text-red-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
-          Whitelist minting done, switch to FCFS tab
-        </span>
-      ) : (
-        <span className="leading-none mt-10 font-bold text-green-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
-          Whitelist minting ongoing
-        </span>
-      )}
+      <div>
+        {mintDone ? (
+          <span className="leading-none mt-10 font-bold text-red-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
+            Whitelist minting done, switch to FCFS tab
+          </span>
+        ) : (
+          <span className="leading-none mt-10 font-bold text-green-500 whitespace-nowrap text-sm lg:text-base w-full text-center md:text-left">
+            Whitelist minting ongoing
+          </span>
+        )}
+      </div>
 
-      <p className="text-neutral-500 dark:text-neutral-400 text-sm mt-10 mb-1.5">
-        Total minted
-      </p>
+      <div>
+        <p className="text-neutral-500 dark:text-neutral-400 text-sm mt-10 mb-1.5">
+          Total minted
+        </p>
+      </div>
 
       <div className="w-full bg-gray-300 rounded-full dark:bg-gray-700 relative h-[22px] overflow-hidden mt-1">
         <div
@@ -150,38 +149,42 @@ const Whitelist = ({
       </div>
 
       <div className="border-b-[0.3px] border-b-white w-full my-8" />
-      {address ? (
-        <>
-          {mintDone || mintAmount === 1 ? (
-            <button
-              disabled
-              className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-not-allowed disabled:bg-opacity-70 bg-red-400 hover:bg-red-700 text-neutral-50 flex-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-6000 dark:focus:ring-offset-0"
-            >
-              Sold out
-            </button>
-          ) : (
-            <>
-              {mintClosed ? (
+      <div>
+        {address ? (
+          <div>
+            {mintDone || mintAmount === 1 ? (
+              <div>
                 <button
                   disabled
-                  className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-yellow-400 active:bg-yellow-700 text-neutral-50 flex-1 delay-75"
+                  className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-not-allowed disabled:bg-opacity-70 bg-red-400 hover:bg-red-700 text-neutral-50 flex-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-6000 dark:focus:ring-offset-0"
                 >
-                  Minting Unavailable
+                  Sold out
                 </button>
-              ) : (
-                <button
-                  onClick={() => callMint()}
-                  className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-green-400 active:bg-green-700 text-neutral-50 flex-1 delay-75"
-                >
-                  Mint NFT
-                </button>
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <MintConnect />
-      )}
+              </div>
+            ) : (
+              <div>
+                {mintClosed ? (
+                  <button
+                    disabled
+                    className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-yellow-400 active:bg-yellow-700 text-neutral-50 flex-1 delay-75"
+                  >
+                    Minting Unavailable
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => callMint()}
+                    className="w-full mt-1.5 relative h-auto inline-flex items-center justify-center rounded-full transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-green-400 active:bg-green-700 text-neutral-50 flex-1 delay-75"
+                  >
+                    Mint NFT
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          <MintConnect />
+        )}
+      </div>
     </div>
   );
 };

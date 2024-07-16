@@ -5,6 +5,7 @@ import { useState } from "react";
 import AllTabs from "@/components/Collection/LaunchTabs/AllTabs";
 import LaunchTabs from "@/components/Collection/Launchpad/LaunchTabs";
 import CheckWL from "@/components/Collection/Launchpad/CheckWL";
+import { useRouter } from "next/router";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -13,6 +14,8 @@ const font = Poppins({
 
 export default function Collection() {
   const [Tab, setSurrentTab] = useState<"Mint" | "CheckWL">("Mint");
+  const router = useRouter();
+  const { id } = router.query;
 
   return (
     <main
@@ -22,7 +25,7 @@ export default function Collection() {
       <div className="flex w-full justify-center items-center mx-auto">
         <LaunchTabs tab={Tab} setCurrentTab={setSurrentTab} />
       </div>
-      {Tab === "Mint" ? <AllTabs /> : <CheckWL />}
+      {Tab === "Mint" ? <AllTabs contract={id} /> : <CheckWL />}
     </main>
   );
 }
