@@ -60,7 +60,7 @@ export default function Admin() {
       ? false
       : true;
   }, [whitelistSale, fcfsSale, publicSale]);
-  // https://ipfs.io/ipfs/QmXWLrvd3FQEFuLN64qmAFyTWV2vy8KiMCrBB4WbTX1JnK/1.png
+
   useEffect(() => {
     if (isConfirmed) {
       toast.success("Launchpad Created");
@@ -187,11 +187,12 @@ export default function Admin() {
       className={`flex min-h-screen flex-col items-center text-white bg-[#0b0f19] ${font.className} w-full`}
     >
       <Nav />
+      <Toaster />
       <div className="flex w-full justify-center items-center mx-auto flex-col px-4 md:px-6 pb-20">
         <div className="animation-header3 text-2xl md:text-4xl mt-10 text-center whitespace-nowrap">
           CREATE AN NFT LAUNCHPAD
         </div>
-        <Toaster />
+
         <div className="w-full bg-[#111827] border border-gray-600 p-5 lg:p-8 rounded-2xl shadow-xl flex flex-col lg:items-center relative mt-6">
           <div className="flex w-full flex-col">
             <div className="grid grid-cols-2 md:grid-cols-3 items-center w-full gap-5">

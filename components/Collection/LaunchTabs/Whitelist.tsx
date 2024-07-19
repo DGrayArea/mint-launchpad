@@ -93,46 +93,6 @@ const Whitelist = () => {
     }
   };
 
-  // const callWhitelist = async () => {
-  //   const getProviderAndSigner = () => {
-  //     const provider = new ethers.JsonRpcProvider("https://rpc.mintchain.io");
-
-  //     // Get the private key from the environment variable
-  //     const privateKey =
-  //       "";
-
-  //     if (!privateKey) {
-  //       throw new Error("Private key is not defined in environment variables");
-  //     }
-
-  //     // Create a wallet instance with the private key and provider
-  //     const wallet = new ethers.Wallet(privateKey, provider);
-
-  //     return { provider, signer: wallet };
-  //   };
-
-  //   try {
-  //     const { signer } = getProviderAndSigner();
-  //     const contractC = new ethers.Contract(contract, abi, signer);
-
-  //     // Replace `yourFunctionName` with the actual function name and add any parameters if required
-  //     const tx = await contractC.addToFCFS([]);
-
-  //     // Wait for the transaction to be mined
-  //     const receipt = await tx.wait();
-  //     console.log("Transaction successful with hash:", receipt.transactionHash);
-  //   } catch (error) {
-  //     console.error("Error calling contract function:", error);
-  //   }
-
-  //   // writeContract({
-  //   //   abi,
-  //   //   address: contract,
-  //   //   functionName: "addToWhitelist",
-  //   //   args: [["0xa31420f5bc6cf8a9d4ac7b6132b7fc2f93546fab"]],
-  //   // });
-  // };
-
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-baseline p-5 lg:p-6 border-2 border-green-500 rounded-xl relative mb-3">
@@ -141,7 +101,7 @@ const Whitelist = () => {
             FREE
           </span>
           <span className="text-base lg:text-lg text-neutral-400 sm:ml-3.5">
-            ({mintAmount ? mintAmount : 0}/1)
+            ({isNaN(mintAmount) ? 0 : mintAmount}/1)
           </span>
         </div>
         <span className="block absolute bottom-full translate-y-2.5 py-1 px-1.5 bg-[#111827] text-xs lg:text-sm text-neutral-400">

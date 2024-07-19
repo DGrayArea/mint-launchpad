@@ -23,6 +23,14 @@ export interface SaleParamsType {
   isFcfsActive: boolean;
 }
 
+export interface MintPhase {
+  isActive: boolean;
+  isLive: boolean;
+  price: number | string;
+  limit: number | string;
+  minted: number | string;
+}
+
 export interface MetadataParamsType {
   name: string;
   symbol: string;

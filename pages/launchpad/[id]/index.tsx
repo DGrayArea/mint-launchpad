@@ -1,11 +1,11 @@
 import Nav from "@/components/Header/Nav";
 import { Poppins } from "next/font/google";
 import { useState } from "react";
-
 import AllTabs from "@/components/Collection/LaunchTabs/AllTabs";
 import LaunchTabs from "@/components/Collection/Launchpad/LaunchTabs";
 import CheckWL from "@/components/Collection/Launchpad/CheckWL";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -21,11 +21,12 @@ export default function Collection() {
     <main
       className={`flex min-h-screen flex-col items-center text-white bg-[#0b0f19] ${font.className} w-full`}
     >
+      <Toaster />
       <Nav />
       <div className="flex w-full justify-center items-center mx-auto">
         <LaunchTabs tab={Tab} setCurrentTab={setSurrentTab} />
       </div>
-      {Tab === "Mint" ? <AllTabs contract={id} /> : <CheckWL />}
+      {Tab === "Mint" ? <AllTabs contract={id} /> : <CheckWL contract={id} />}
     </main>
   );
 }

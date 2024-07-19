@@ -10,9 +10,10 @@ import { useMintTab } from "@/hooks/useMintTab";
 import Whitelist from "./Tabs/Whitelist";
 import Fcfs from "./Tabs/Fcfs";
 import Public from "./Tabs/Public";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useReadContract } from "wagmi";
 import { NFTCollection } from "@/config/Abi";
+import Loading from "./Tabs/Loading";
 
 const Card = ({ contract }: { contract: string | any }) => {
   const { currentTab, setCurrentTab } = useMintTab();
@@ -22,6 +23,7 @@ const Card = ({ contract }: { contract: string | any }) => {
     telegram: "",
     discord: "",
   });
+  const [loading, setLoading] = useState(false);
   const totalSupply = useReadContract({
     abi: NFTCollection,
     address: contract,
@@ -47,7 +49,35 @@ const Card = ({ contract }: { contract: string | any }) => {
     address: contract,
     functionName: "publicPhase",
   });
-  console.log(whitelist.data, fcfs.data, publics.data);
+  const name = useReadContract({
+    abi: NFTCollection,
+    address: contract,
+    functionName: "name",
+  });
+  const price = useReadContract({
+    abi: NFTCollection,
+    address: contract,
+    functionName: "baseFee",
+  });
+  useEffect(() => {
+    //@ts-ignore
+    if (
+      totalSupply.data &&
+      maxSupply.data &&
+      //@ts-ignore
+      whitelist.data[1] &&
+      //@ts-ignore
+      fcfs.data[1] &&
+      //@ts-ignore
+      publics.data[1] &&
+      name?.data &&
+      price?.data
+    ) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [totalSupply, maxSupply, whitelist, fcfs, publics, name, price]);
   // const [socials, setSocials] = useState({
   //   website: "https://punkverse.xyz",
   //   twitter: "https://x.com/PunkonMint?s=09",
@@ -58,7 +88,8 @@ const Card = ({ contract }: { contract: string | any }) => {
   return (
     <div className="bg-[#111827] rounded-3xl overflow-hidden relative shadow-2xl drop-shadow-2xl py-4 px-5 lg:py-8 lg:px-10 p-4 w-full">
       <div className="text-2xl lg:text-3xl lg:leading-[2.5rem] 2xl:text-4xl 2xl:leading-[3rem] font-extrabold flex items-end gap-2.5 whitespace-nowrap min-w-[200px] w-full">
-        Mint Punk
+        {/*@ts-ignore*/}
+        {name?.data ? name?.data : ""}
       </div>
       <div className="w-full justify-between items-center flex mt-4 lg:mt-6 space-x-6">
         <div className="flex flex-row items-center space-x-1.5 lg:space-x-3 w-full">
@@ -135,71 +166,94 @@ const Card = ({ contract }: { contract: string | any }) => {
         </div>
       </div>
 
-      <div className="flex flex-row bg-gray-800/75 py-2 my-8 w-full rounded-xl items-center justify-center px-2">
-        {
-          //@ts-ignore
-          whitelist && whitelist?.data[1] === true ? (
-            <div
-              onClick={() => setCurrentTab("Whitelist")}
-              className={`font-extrabold text-base lg:text-lg flex flex-row items-center justify-center w-full lg:w-full px-1 py-1 rounded-md cursor-pointer transition-all ease-in-out duration-75 ${
-                currentTab === "Whitelist" ? "bg-[#dbeafe]" : "bg-none"
-              }`}
-            >
-              <div className="animation-header font-extrabold">Whitelist</div>
-            </div>
-          ) : null
-        }
-        {
-          //@ts-ignore
-          fcfs && fcfs?.data[1] === true ? (
-            <div
-              onClick={() => setCurrentTab("FCFS")}
-              className={`font-extrabold text-base lg:text-lg flex flex-row items-center justify-center  w-full lg:w-full px-1 py-1 rounded-md cursor-pointer transition-all ease-in-out duration-75 ${
-                currentTab === "FCFS" ? "bg-[#dbeafe]" : "bg-none"
-              }`}
-            >
-              <div className="animation-header2 font-extrabold">FCFS</div>
-            </div>
-          ) : null
-        }
-        {
-          //@ts-ignore
-          publics && publics?.data[1] === true ? (
-            <div
-              onClick={() => setCurrentTab("Public")}
-              className={`font-extrabold text-base lg:text-lg flex flex-row items-center justify-center  w-full lg:w-full px-1 py-1 rounded-md cursor-pointer transition-all ease-in-out duration-75 ${
-                currentTab === "Public" ? "bg-[#dbeafe]" : "bg-none"
-              }`}
-            >
-              <div className="animation-header3 font-extrabold">Public</div>
-            </div>
-          ) : null
-        }
-      </div>
-      <div className="w-full">
-        {currentTab === "Whitelist" ? (
-          <Whitelist
-            //@ts-ignore
-            totalSupply={parseInt(totalSupply.data)}
-            //@ts-ignore
-            maxSupply={parseInt(maxSupply.data)}
-          />
-        ) : currentTab === "FCFS" ? (
-          <Fcfs
-            //@ts-ignore
-            totalSupply={parseInt(totalSupply.data)}
-            //@ts-ignore
-            maxSupply={parseInt(maxSupply.data)}
-          />
-        ) : (
-          <Public
-            //@ts-ignore
-            totalSupply={parseInt(totalSupply.data)}
-            //@ts-ignore
-            maxSupply={parseInt(maxSupply.data)}
-          />
-        )}
-      </div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="flex flex-row bg-gray-800/75 py-2 my-8 w-full rounded-xl items-center justify-center px-2">
+            {
+              //@ts-ignore
+              whitelist?.data?.length > 0 && whitelist?.data[1] === true ? (
+                <div
+                  onClick={() => setCurrentTab("Whitelist")}
+                  className={`font-extrabold text-base lg:text-lg flex flex-row items-center justify-center w-full lg:w-full px-1 py-1 rounded-md cursor-pointer transition-all ease-in-out duration-75 ${
+                    currentTab === "Whitelist" ? "bg-[#dbeafe]" : "bg-none"
+                  }`}
+                >
+                  <div className="animation-header font-extrabold">
+                    Whitelist
+                  </div>
+                </div>
+              ) : null
+            }
+            {
+              //@ts-ignore
+              fcfs?.data?.length > 0 && fcfs?.data[1] === true ? (
+                <div
+                  onClick={() => setCurrentTab("FCFS")}
+                  className={`font-extrabold text-base lg:text-lg flex flex-row items-center justify-center  w-full lg:w-full px-1 py-1 rounded-md cursor-pointer transition-all ease-in-out duration-75 ${
+                    currentTab === "FCFS" ? "bg-[#dbeafe]" : "bg-none"
+                  }`}
+                >
+                  <div className="animation-header2 font-extrabold">FCFS</div>
+                </div>
+              ) : null
+            }
+            {
+              //@ts-ignore
+              publics?.data?.length > 0 && publics?.data[1] === true ? (
+                <div
+                  onClick={() => setCurrentTab("Public")}
+                  className={`font-extrabold text-base lg:text-lg flex flex-row items-center justify-center  w-full lg:w-full px-1 py-1 rounded-md cursor-pointer transition-all ease-in-out duration-75 ${
+                    currentTab === "Public" ? "bg-[#dbeafe]" : "bg-none"
+                  }`}
+                >
+                  <div className="animation-header3 font-extrabold">Public</div>
+                </div>
+              ) : null
+            }
+          </div>
+          <div className="w-full">
+            {currentTab === "Whitelist" ? (
+              <Whitelist
+                //@ts-ignore
+                data={whitelist?.data}
+                //@ts-ignore
+                price={Number(price?.data)}
+                contract={contract}
+                //@ts-ignore
+                totalSupply={parseInt(totalSupply.data)}
+                //@ts-ignore
+                maxSupply={parseInt(maxSupply.data)}
+              />
+            ) : currentTab === "FCFS" ? (
+              <Fcfs
+                //@ts-ignore
+                data={fcfs?.data}
+                //@ts-ignore
+                price={Number(price?.data)}
+                contract={contract}
+                //@ts-ignore
+                totalSupply={parseInt(totalSupply.data)}
+                //@ts-ignore
+                maxSupply={parseInt(maxSupply.data)}
+              />
+            ) : (
+              <Public
+                //@ts-ignore
+                data={publics?.data}
+                //@ts-ignore
+                price={Number(price?.data)}
+                contract={contract}
+                //@ts-ignore
+                totalSupply={parseInt(totalSupply.data)}
+                //@ts-ignore
+                maxSupply={parseInt(maxSupply.data)}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

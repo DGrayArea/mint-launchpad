@@ -8,7 +8,7 @@ const Photo = ({ contract }: { contract: string | any }) => {
       <div className="absolute lg:-left-[500px] -left-0 lg:top-[7%] top-[37%] md:top-[44%] lg:ml-[10%] transition-all w-full px-3.5">
         <Card contract={contract} />
       </div>
-      <div className="w-full h-[945px] md:h-[1150px] lg:h-full">
+      <div className="w-full h-[1040px] md:h-[1150px] lg:h-full">
         <Link href={`/collection/${contract}`} className="w-full h-fit">
           <Image
             alt="nft-img"
