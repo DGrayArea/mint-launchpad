@@ -14,8 +14,16 @@ import { useEffect, useState } from "react";
 import { useReadContract } from "wagmi";
 import { NFTCollection } from "@/config/Abi";
 import Loading from "./Tabs/Loading";
+import { createAvatar } from "@dicebear/core";
+import { pixelArt } from "@dicebear/collection";
 
-const Card = ({ contract }: { contract: string | any }) => {
+const Card = ({
+  collectionData,
+  contract,
+}: {
+  collectionData: any;
+  contract: string | any;
+}) => {
   const { currentTab, setCurrentTab } = useMintTab();
   const [socials, setSocials] = useState({
     website: "",
@@ -59,32 +67,40 @@ const Card = ({ contract }: { contract: string | any }) => {
     address: contract,
     functionName: "baseFee",
   });
+
   useEffect(() => {
     //@ts-ignore
-    if (
-      totalSupply.data &&
-      maxSupply.data &&
-      //@ts-ignore
-      whitelist.data[1] &&
-      //@ts-ignore
-      fcfs.data[1] &&
-      //@ts-ignore
-      publics.data[1] &&
-      name?.data &&
-      price?.data
-    ) {
-      setLoading(true);
-    } else {
+    setLoading(true);
+    //@ts-ignore
+    if (collectionData?.data && collectionData.data.length > 0) {
+      setSocials({
+        //@ts-ignore
+        website: collectionData?.data[1],
+        //@ts-ignore
+        twitter: collectionData?.data[2],
+        //@ts-ignore
+        telegram: collectionData?.data[3],
+        //@ts-ignore
+        discord: collectionData?.data[4],
+      });
       setLoading(false);
     }
-  }, [totalSupply, maxSupply, whitelist, fcfs, publics, name, price]);
+  }, [collectionData]);
+  // console.log(socials, loading);
   // const [socials, setSocials] = useState({
   //   website: "https://punkverse.xyz",
   //   twitter: "https://x.com/PunkonMint?s=09",
   //   telegram: "https://t.me/punkshield",
   //   discord: "https://discord.com/punk",
   // });
+  const avatar = createAvatar(pixelArt, {
+    seed: contract,
+    // ... other options
+  });
 
+  const png = avatar.toString();
+  // Convert the SVG string to a data URI
+  const avatarDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(png)}`;
   return (
     <div className="bg-[#111827] rounded-3xl overflow-hidden relative shadow-2xl drop-shadow-2xl py-4 px-5 lg:py-8 lg:px-10 p-4 w-full">
       <div className="text-2xl lg:text-3xl lg:leading-[2.5rem] 2xl:text-4xl 2xl:leading-[3rem] font-extrabold flex items-end gap-2.5 whitespace-nowrap min-w-[200px] w-full">
@@ -95,7 +111,7 @@ const Card = ({ contract }: { contract: string | any }) => {
         <div className="flex flex-row items-center space-x-1.5 lg:space-x-3 w-full">
           <div>
             <Image
-              src="/1.png"
+              src={avatarDataUri}
               width={42}
               height={42}
               alt="creator-img"

@@ -67,10 +67,13 @@ const CheckWL = ({ contract }: { contract: string | any }) => {
         className="max-w-[80%] lg:max-w-96 py-7 border-gray-600 rounded-xl px-4 text-center mt-36"
       />
 
-      <div className={`mt-16 text-center`}>
-        You are{" "}
+      <div
+        className={`mt-16 text-center ${
+          isGot ? "block" : "hidden"
+        } transition-all delay-75`}
+      >
+        You are
         <>
-          {" "}
           {/**@ts-ignore */}
           {whitelist?.data[1] ? (
             <>
