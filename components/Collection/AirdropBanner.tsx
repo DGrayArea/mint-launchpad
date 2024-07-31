@@ -1,22 +1,26 @@
+import { AirdropContract, NftABI, NftContract } from "@/config/Abi";
+import { validateAddresses, validateNumbers } from "@/helpers/validate";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { Textarea } from "../ui/textarea";
-import { useAccount, useWriteContract } from "wagmi";
-import { useToast } from "@/components/ui/use-toast";
-import { NftContract, NftABI, AirdropContract } from "@/config/Abi";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { DialogTab } from "./LaunchTabs/DialogTab";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useAccount, useWriteContract } from "wagmi";
+import { Input } from "../ui/input";
+import { DialogTab } from "./LaunchTabs/DialogTab";
 import { Upload } from "./LaunchTabs/Upload";
 
 const AirdropBanner = () => {
   const { address } = useAccount();
+  const [csvAddresses, setCsvAddresses] = useState<string[]>([]);
+  const [csvAmounts, setcsvAmounts] = useState<number[]>([]);
   const { writeContract } = useWriteContract();
-  const { toast } = useToast();
-  const [addresses, setAddresses] = useState<string[]>();
+  const [addresses, setAddresses] = useState("");
   const [numbers, setNumbers] = useState(0);
-  const [amounts, setAmounts] = useState<number[] | string[]>();
+  const [amounts, setAmounts] = useState("");
   const [files, setFile] = useState<any>(null);
+  const [errordd, setErrorAdd] = useState(false);
+  const [errorIds, setErrorIds] = useState(false);
+  const [amtSwitch, setAmtSwitch] = useState(false);
+  const [isApproved, setIsApproved] = useState(true);
 
   const callApprove = () => {
     writeContract({
@@ -35,7 +39,44 @@ const AirdropBanner = () => {
       4000
     );
   };
-  console.log(addresses, numbers, amounts);
+
+  const callAirdrop = () => {
+    // writeContract({
+    //   abi: NftABI,
+    //   address: NftContract,
+    //   functionName: "setApprovalForAll",
+    //   args: [AirdropContract, true],
+    // });
+    try {
+      const addies = validateAddresses(addresses);
+      const perAmounts = validateNumbers(amounts);
+
+      if (addies && addies?.length > 0) {
+        if (!amtSwitch) {
+          if (perAmounts && perAmounts.length > 0) {
+            console.log({ addies, perAmounts });
+          } else {
+            setErrorIds(true);
+            toast.error(`No or Invalid number(s) detected`);
+          }
+        } else {
+          if (numbers && numbers > 0) {
+            console.log({ addies, numbers });
+          }
+        }
+      } else {
+        setErrorAdd(true);
+        toast.error(`No or Invalid address(es) detected`);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(`Error Airdropping NFTs`);
+    }
+  };
+  const clearCsv = () => {
+    setCsvAddresses([]);
+    setcsvAmounts([]);
+  };
   return (
     <div className="h-full mt-10 mb-10 container w-full px-3.5">
       <div className="bg-[#111827] border border-gray-600 p-5 lg:p-8 rounded-2xl shadow-xl flex flex-col lg:items-center relative">
@@ -57,23 +98,45 @@ const AirdropBanner = () => {
 
         <div className="mt-10 flex flex-row space-x-5 items-center justify-center">
           <DialogTab
+            adde={addresses}
+            amt={numbers}
+            amtArr={amounts}
             setAddresses={setAddresses}
             setAmount={setAmounts}
             setNumber={setNumbers}
+            errordd={errordd}
+            errorIds={errorIds}
+            amtSwitch={amtSwitch}
+            setAmtSwitch={setAmtSwitch}
+            clear={clearCsv}
           />
-          <Upload setFile={setFile} />
+          <Upload
+            addresses={csvAddresses}
+            setAddresses={setCsvAddresses}
+            amounts={csvAmounts}
+            setAmounts={setcsvAmounts}
+          />
 
           {/* <button className="w-full relative h-auto inline-flex items-center justify-center rounded-xl transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-green-500 active:bg-green-700 text-neutral-50 flex-1 delay-75">
             Add Addresses
           </button> */}
         </div>
         <div className="mt-10 flex flex-row space-x-5 items-center justify-center">
-          <button
-            onClick={() => callApprove()}
-            className="w-full relative h-auto inline-flex items-center justify-center rounded-xl transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-red-500 active:bg-red-700 text-neutral-50 flex-1 delay-75"
-          >
-            Set Approval For all
-          </button>
+          {isApproved ? (
+            <button
+              onClick={() => callAirdrop()}
+              className="w-full relative h-auto inline-flex items-center justify-center rounded-xl transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-red-500 active:bg-red-700 text-neutral-50 flex-1 delay-75"
+            >
+              Airdrop
+            </button>
+          ) : (
+            <button
+              onClick={() => callApprove()}
+              className="w-full relative h-auto inline-flex items-center justify-center rounded-xl transition-colors text-sm sm:text-base font-medium px-4 py-3 sm:px-6 cursor-pointer disabled:bg-opacity-70 bg-red-500 active:bg-red-700 text-neutral-50 flex-1 delay-75"
+            >
+              Set Approval For all
+            </button>
+          )}
         </div>
       </div>
     </div>

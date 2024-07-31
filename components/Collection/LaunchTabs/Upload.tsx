@@ -3,17 +3,134 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
+import React, { useState } from "react";
+import Papa from "papaparse";
+import truncateEthAddress from "truncate-eth-address";
 
-export function Upload({ setFile }: { setFile: any }) {
+type CsvData = {
+  address: string;
+  amount: string;
+};
+
+export function Upload({
+  addresses,
+  setAddresses,
+  amounts,
+  setAmounts,
+}: {
+  addresses: string[];
+  setAddresses: (addresses: string[]) => void;
+  amounts: number[];
+  setAmounts: (numbers: number[]) => void;
+}) {
+  const CSVUploader: React.FC = () => {
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) {
+        return;
+      }
+
+      Papa.parse<CsvData>(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          const parsedAddresses: string[] = [];
+          const parsedAmounts: number[] = [];
+          const { data, errors } = results;
+
+          if (errors.length) {
+            console.error("Parsing errors:", errors);
+            setErrorMessage("Error parsing CSV. Please check the file format.");
+            return;
+          }
+
+          // Validate and process the data
+          data.forEach((row, index) => {
+            if (row.address && row.amount) {
+              const trimmedAddress = row.address.trim();
+              const amount = parseFloat(row.amount);
+              // Validate Ethereum address format
+              const addressRegex = /^0x[a-fA-F0-9]{40}$/;
+              if (addressRegex.test(trimmedAddress) && !isNaN(amount)) {
+                parsedAddresses.push(trimmedAddress);
+                parsedAmounts.push(amount);
+              } else {
+                console.warn(`Row ${index + 1} has invalid data.`);
+              }
+            }
+          });
+
+          if (parsedAddresses.length > 0 && parsedAmounts.length > 0) {
+            setAddresses(parsedAddresses);
+            setAmounts(parsedAmounts);
+            setErrorMessage(null); // Clear any previous error messages
+          } else {
+            setErrorMessage("No valid data found in the CSV file.");
+          }
+        },
+        error: (error) => {
+          console.error("Error while parsing:", error.message);
+          setErrorMessage("An error occurred while parsing the CSV file.");
+        },
+      });
+    };
+
+    return (
+      <div className="container mx-auto">
+        <div className="w-full flex items-center flex-col space-y-8 mt-2">
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="picture">Upload Addresses</Label>
+            <Input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className={`${errorMessage ? "border border-red-500 mb-2" : ""}`}
+            />
+          </div>
+        </div>
+
+        {errorMessage && (
+          <div className="mb-4 text-red-600 font-semibold">
+            Error: {errorMessage}
+          </div>
+        )}
+
+        {addresses.length > 0 && amounts.length > 0 && (
+          <div className="mt-4 w-full overflow-x-auto overflow-y-auto max-h-56">
+            <h3 className="text-lg font-semibold">Parsed Data:</h3>
+            <table className="table-auto mt-2 w-full border-collapse border border-gray-200 overflow-x-auto overflow-y-auto max-h-20">
+              <thead className="overflow-x-auto overflow-y-auto">
+                <tr className="overflow-x-auto overflow-y-auto">
+                  <th className="border px-4 py-2">Address</th>
+                  <th className="border px-4 py-2">Amount</th>
+                </tr>
+              </thead>
+              <tbody className="overflow-x-auto overflow-y-auto">
+                {addresses.map((address, index) => (
+                  <tr key={index}>
+                    <td className="border px-4 py-2">
+                      {truncateEthAddress(address)}
+                    </td>
+                    <td className="border px-4 py-2">{amounts[index]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -29,12 +146,7 @@ export function Upload({ setFile }: { setFile: any }) {
             rate. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <div className="w-full flex items-center flex-col space-y-8 mt-5">
-          <div className="grid w-full x max-w-sm items-center gap-1.5">
-            <Label htmlFor="picture">Upload Addresses</Label>
-            <Input onChange={(e) => console.log(e)} id="picture" type="file" />
-          </div>
-        </div>
+        <CSVUploader />
         <DialogClose asChild>
           <Button type="submit">Save changes</Button>
         </DialogClose>
