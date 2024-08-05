@@ -2019,6 +2019,8 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
     string baseURI;
 
     bool public paused = false;
+    bool public isLaunchpad = true;
+    bool public isDrop;
 
     uint256 public maxSupply;
     uint256 public platformFee;
@@ -2044,6 +2046,7 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
         uint256 _platformFee,
         address _feeAddress,
         uint256 _baseFee,
+        bool _isDrop,
         address _creator
     ) ERC721(_metadata.name, _metadata.symbol) Ownable(msg.sender) {
         transferOwnership(_creator);
@@ -2074,6 +2077,7 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
 
         maxSupply = _maxSupply;
         baseFee = _baseFee;
+        isDrop = _isDrop;
         platformFee = _platformFee;
         setBaseURI(_metadata.initBaseURI);
         feeAddress = _feeAddress;
@@ -2201,6 +2205,22 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
         publicPhase.isActive = publicActive;
     }
 
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+    require(
+      _exists(tokenId),
+      "ERC721Metadata: URI query for nonexistent token"
+    );
+    
+    if(revealed == false) {
+        return notRevealedUri;
+    }
+
+    string memory currentBaseURI = _baseURI();
+    return bytes(currentBaseURI).length > 0
+        ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension))
+        : "";
+  }
+
     function walletOfOwner(address _owner) public view returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory tokenIds = new uint256[](ownerTokenCount);
@@ -2275,6 +2295,7 @@ contract LaunchpadFactory is Ownable2Step {
         SaleParams memory _saleParams,
         NFTEntry memory _nftData,
         bool _isFreeMint,
+        bool _isDrop,
         uint256 _maxSupply,
         address _creator
     ) external onlyOwner returns (address) {
@@ -2294,6 +2315,7 @@ contract LaunchpadFactory is Ownable2Step {
             _platformFee,
             feeAddress,
             baseFee,
+            _isDrop,
             _creator
         );
         address collectionAddress = address(newCollection);
