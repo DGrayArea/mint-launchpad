@@ -2025,6 +2025,73 @@ export const AirdropContractABI = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "ReentrancyGuardReentrantCall",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "tokenAddress",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "tokenOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "AirdropFailed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "tokenAddress",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "tokenOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "AirdropTokenFailed",
+    type: "event",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -2088,24 +2155,75 @@ export const AirdropContractABI = [
     type: "event",
   },
   {
+    stateMutability: "payable",
+    type: "fallback",
+  },
+  {
     inputs: [
       {
         internalType: "address",
-        name: "nftContractAddress",
+        name: "_tokenAddress",
         type: "address",
       },
       {
-        internalType: "address[]",
-        name: "recipients",
-        type: "address[]",
+        internalType: "address",
+        name: "_tokenOwner",
+        type: "address",
       },
       {
-        internalType: "uint256[][]",
-        name: "tokenIds",
-        type: "uint256[][]",
+        components: [
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IAirdropERC721.AirdropTokenContent[]",
+        name: "_contents",
+        type: "tuple[]",
       },
     ],
-    name: "airdropNFTs",
+    name: "airdropERC20",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_tokenAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_tokenOwner",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "tokenId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IAirdropERC721.AirdropContent[]",
+        name: "_contents",
+        type: "tuple[]",
+      },
+    ],
+    name: "airdropERC721",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -2215,160 +2333,6 @@ export const AirdropContractABI = [
   },
 ];
 export const LaunchpadFactoryABI = [
-  {
-    inputs: [],
-    name: "acceptOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "collectFees",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "string",
-            name: "name",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "symbol",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "initBaseURI",
-            type: "string",
-          },
-        ],
-        internalType: "struct MetadataParams",
-        name: "_metadata",
-        type: "tuple",
-      },
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "whitelistLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "publicLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "fcfsLimit",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "whitelistPrice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "publicPrice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "fcfsPrice",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "isWlActive",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "isPublicActive",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "isFcfsActive",
-            type: "bool",
-          },
-        ],
-        internalType: "struct SaleParams",
-        name: "_saleParams",
-        type: "tuple",
-      },
-      {
-        components: [
-          {
-            internalType: "string",
-            name: "website",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "x",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "telegram",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "discord",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "logoUri",
-            type: "string",
-          },
-          {
-            internalType: "string",
-            name: "backgroundUri",
-            type: "string",
-          },
-        ],
-        internalType: "struct NFTEntry",
-        name: "_nftData",
-        type: "tuple",
-      },
-      {
-        internalType: "bool",
-        name: "_isFreeMint",
-        type: "bool",
-      },
-      {
-        internalType: "uint256",
-        name: "_maxSupply",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "_creator",
-        type: "address",
-      },
-    ],
-    name: "createCollection",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
   {
     inputs: [
       {
@@ -2542,119 +2506,15 @@ export const LaunchpadFactoryABI = [
     type: "event",
   },
   {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     stateMutability: "payable",
     type: "fallback",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_baseFee",
-        type: "uint256",
-      },
-    ],
-    name: "updateBaseFee",
+    inputs: [],
+    name: "acceptOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_collectionAddress",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "_website",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_x",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_telegram",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_discord",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_logo",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "_background",
-        type: "string",
-      },
-    ],
-    name: "updateCollection",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newCollector",
-        type: "address",
-      },
-    ],
-    name: "updateFeeCollector",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_newFeeAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_newCostAmount",
-        type: "uint256",
-      },
-    ],
-    name: "updatePlatformFee",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    stateMutability: "payable",
-    type: "receive",
   },
   {
     inputs: [],
@@ -2667,6 +2527,13 @@ export const LaunchpadFactoryABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "collectFees",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -2748,6 +2615,151 @@ export const LaunchpadFactoryABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "symbol",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "initBaseURI",
+            type: "string",
+          },
+        ],
+        internalType: "struct MetadataParams",
+        name: "_metadata",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "whitelistLimit",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "publicLimit",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "fcfsLimit",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "whitelistPrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "publicPrice",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "fcfsPrice",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "isWlActive",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isPublicActive",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "isFcfsActive",
+            type: "bool",
+          },
+        ],
+        internalType: "struct SaleParams",
+        name: "_saleParams",
+        type: "tuple",
+      },
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "website",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "x",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "telegram",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "discord",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "logoUri",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "backgroundUri",
+            type: "string",
+          },
+        ],
+        internalType: "struct NFTEntry",
+        name: "_nftData",
+        type: "tuple",
+      },
+      {
+        internalType: "bool",
+        name: "_isFreeMint",
+        type: "bool",
+      },
+      {
+        internalType: "bool",
+        name: "_isDrop",
+        type: "bool",
+      },
+      {
+        internalType: "uint256",
+        name: "_maxSupply",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_creator",
+        type: "address",
+      },
+    ],
+    name: "createCollection",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -2852,6 +2864,117 @@ export const LaunchpadFactoryABI = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_baseFee",
+        type: "uint256",
+      },
+    ],
+    name: "updateBaseFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_collectionAddress",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "_website",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_x",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_telegram",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_discord",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_logo",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_background",
+        type: "string",
+      },
+    ],
+    name: "updateCollection",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newCollector",
+        type: "address",
+      },
+    ],
+    name: "updateFeeCollector",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_newFeeAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_newCostAmount",
+        type: "uint256",
+      },
+    ],
+    name: "updatePlatformFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    stateMutability: "payable",
+    type: "receive",
+  },
 ];
 export const NFTCollection = [
   {
@@ -2949,6 +3072,11 @@ export const NFTCollection = [
         internalType: "uint256",
         name: "_baseFee",
         type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_isDrop",
+        type: "bool",
       },
       {
         internalType: "address",
@@ -3271,6 +3399,36 @@ export const NFTCollection = [
   {
     inputs: [
       {
+        components: [
+          {
+            internalType: "address",
+            name: "recipient",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct AirdropContent[]",
+        name: "contents",
+        type: "tuple[]",
+      },
+      {
+        internalType: "uint256",
+        name: "batchSize",
+        type: "uint256",
+      },
+    ],
+    name: "airdropSequentialWithBatch",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "to",
         type: "address",
@@ -3442,6 +3600,32 @@ export const NFTCollection = [
       },
     ],
     name: "isApprovedForAll",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isDrop",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isLaunchpad",
     outputs: [
       {
         internalType: "bool",
@@ -4048,6 +4232,9 @@ export const NFTCollection = [
     type: "receive",
   },
 ];
+export const LaunchpadContractMainnet = "";
+export const AirdropContractMainet =
+  "0xC32c2a56A17e623D109b5869EA300ecbE6C7D648";
 export const LaunchpadFactoryContract =
   "0x2245eE85D5195f4c2EFd4521EC0fC09fc86E5C60";
 export const AirdropContract = "";
