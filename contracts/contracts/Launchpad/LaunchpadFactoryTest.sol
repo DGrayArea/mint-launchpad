@@ -125,3 +125,18 @@ contract LaunchpadFactory is Ownable2Step {
     
     fallback() external payable {}
 }
+    function airdropSequential(bytes32[] calldata toAndAmount, bool soulbound)
+        external
+        payable
+        override
+        onlyOwner
+    {
+        uint256 toLength = toAndAmount.length;
+
+        for (uint256 i = 0; i < toLength; i++) {
+            address to = address(uint160(uint256(toAndAmount[i])));
+            uint256 amount = uint256(toAndAmount[i] >> 160);
+            _mintSequential(to, amount, soulbound);
+        }
+
+    }

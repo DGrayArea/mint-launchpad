@@ -2001,6 +2001,11 @@ pragma solidity >=0.8.0;
         string initBaseURI;
    }
 
+    struct AirdropContent {
+        address recipient;
+        uint256 amount;
+    }
+
 
 
 // File: NFTCollection.sol
@@ -2133,6 +2138,26 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
       }
     }
 
+    function airdropSequentialWithBatch(AirdropContent[] calldata contents, uint256 batchSize) external payable onlyOwner {
+        require(batchSize > 0, "Batch size must be greater than 0");
+
+        uint256 supply = totalSupply();
+        uint256 toLength = contents.length;
+        uint256 batches = (toLength + batchSize - 1) / batchSize;
+
+        for (uint256 batch = 0; batch < batches; ++batch) {
+            for (uint256 i = batch * batchSize; i < (batch + 1) * batchSize && i < toLength; ++i) {
+               address to = address(contents[i].recipient);
+               uint256 amount = uint256(contents[i].amount);
+               for (uint256 j = 1; j <= amount; ++j) {
+                  _safeMint(to, supply + j);
+                }
+            }
+        }
+
+    }
+
+
     function addToWhitelist(address[] calldata addresses) public onlyOwner {
         for (uint256 i = 0; i < addresses.length; i++) {
             whitelist[addresses[i]] = true;
@@ -2206,19 +2231,24 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-    require(
-      _exists(tokenId),
-      "ERC721Metadata: URI query for nonexistent token"
-    );
-    
-    if(revealed == false) {
-        return notRevealedUri;
-    }
-
+        address owner = _ownerOf(tokenId);
+        if (owner == address(0)) {
+            revert ERC721NonexistentToken(tokenId);
+        }
+    // require(
+    //   _exists(tokenId),
+    //   "ERC721Metadata: URI query for nonexistent token"
+    // );
     string memory currentBaseURI = _baseURI();
+    if(isDrop) {
     return bytes(currentBaseURI).length > 0
-        ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension))
+        ? string(abi.encodePacked(currentBaseURI, tokenId.toString()))
         : "";
+    } else {
+            return bytes(currentBaseURI).length > 0
+        ? string(abi.encodePacked(currentBaseURI))
+        : "";
+    }
   }
 
     function walletOfOwner(address _owner) public view returns (uint256[] memory) {
