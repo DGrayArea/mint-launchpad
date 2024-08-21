@@ -1,5 +1,9 @@
 import { AirdropContract, NFTCollection } from "@/config/Abi";
-import { validateAddresses, validateNumbers } from "@/helpers/validate";
+import {
+  validateAddresses,
+  validateNumbers,
+  validateTokenIds,
+} from "@/helpers/validate";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -160,72 +164,74 @@ const AirdropBanner = () => {
       } else {
         const addies = validateAddresses(addresses);
         const perAmounts = validateNumbers(amounts);
-        if (inputSwitch) {
-          console.log(csvAddresses, csvAmounts);
-          const _result = csvAddresses.map((address, index) => {
-            return [address, csvAmounts[index]];
-          });
+        const tokenIdse = validateTokenIds(tokenIds);
+        console.log(tokenIdse);
+        // if (inputSwitch) {
+        //   console.log(csvAddresses, csvAmounts);
+        //   const _result = csvAddresses.map((address, index) => {
+        //     return [address, csvAmounts[index]];
+        //   });
 
-          const _content: [string | number][] = [];
-          _result.forEach(([address, count]: any[]) => {
-            for (let i = 0; i < count; i++) {
-              //@ts-ignore
-              _content.push([address, 1]);
-            }
-          });
-          console.log(_content);
-        } else {
-          if (addies && addies?.length > 0) {
-            if (!amtSwitch) {
-              if (perAmounts && perAmounts.length > 0) {
-                if (addies.length === perAmounts.length) {
-                  const _result = addies.map((address, index) => {
-                    return {
-                      recipient: address,
-                      amount: perAmounts[index],
-                    };
-                  });
-                  const _contents = _result.map((content, index) => {
-                    return [content.recipient, content.amount];
-                  });
-                  const _input: [string | number][] = [];
-                  _contents.forEach(([address, count]: any[]) => {
-                    for (let i = 0; i < count; i++) {
-                      //@ts-ignore
-                      _input.push([address, 1]);
-                    }
-                  });
-                  console.log(_input);
-                } else {
-                  setErrorIds(true);
-                  toast.error(
-                    `The Amounts and addresses are not equal in length`
-                  );
-                }
-              } else {
-                setErrorIds(true);
-                toast.error(`No or Invalid number(s) detected`);
-              }
-            } else {
-              if (numbers && numbers > 0) {
-                const _input: [string | number][] = [];
-                addies.forEach((address: any) => {
-                  for (let i = 0; i < numbers; i++) {
-                    //@ts-ignore
-                    _input.push([address, 1]);
-                  }
-                });
-                console.log(_input);
-              } else {
-                setErrorIds(true);
-                toast.error(`No or Invalid number value detected`);
-              }
-            }
-          } else {
-            setErrorAdd(true);
-            toast.error(`No or Invalid address(es) detected`);
-          }
-        }
+        //   const _content: [string | number][] = [];
+        //   _result.forEach(([address, count]: any[]) => {
+        //     for (let i = 0; i < count; i++) {
+        //       //@ts-ignore
+        //       _content.push([address, 1]);
+        //     }
+        //   });
+        //   console.log(_content);
+        // } else {
+        //   if (addies && addies?.length > 0) {
+        //     if (!amtSwitch) {
+        //       if (perAmounts && perAmounts.length > 0) {
+        //         if (addies.length === perAmounts.length) {
+        //           const _result = addies.map((address, index) => {
+        //             return {
+        //               recipient: address,
+        //               amount: perAmounts[index],
+        //             };
+        //           });
+        //           const _contents = _result.map((content, index) => {
+        //             return [content.recipient, content.amount];
+        //           });
+        //           const _input: [string | number][] = [];
+        //           _contents.forEach(([address, count]: any[]) => {
+        //             for (let i = 0; i < count; i++) {
+        //               //@ts-ignore
+        //               _input.push([address, 1]);
+        //             }
+        //           });
+        //           console.log(_input);
+        //         } else {
+        //           setErrorIds(true);
+        //           toast.error(
+        //             `The Amounts and addresses are not equal in length`
+        //           );
+        //         }
+        //       } else {
+        //         setErrorIds(true);
+        //         toast.error(`No or Invalid number(s) detected`);
+        //       }
+        //     } else {
+        //       if (numbers && numbers > 0) {
+        //         const _input: [string | number][] = [];
+        //         addies.forEach((address: any) => {
+        //           for (let i = 0; i < numbers; i++) {
+        //             //@ts-ignore
+        //             _input.push([address, 1]);
+        //           }
+        //         });
+        //         console.log(_input);
+        //       } else {
+        //         setErrorIds(true);
+        //         toast.error(`No or Invalid number value detected`);
+        //       }
+        //     }
+        //   } else {
+        //     setErrorAdd(true);
+        //     toast.error(`No or Invalid address(es) detected`);
+        //   }
+        // }
       }
     } catch (error) {
       console.log(error);
@@ -236,7 +242,7 @@ const AirdropBanner = () => {
     setCsvAddresses([]);
     setcsvAmounts([]);
   };
-  console.log(tokenIds);
+
   return (
     <div className="h-full mt-10 mb-10 container w-full px-3.5">
       {selectOption ? (

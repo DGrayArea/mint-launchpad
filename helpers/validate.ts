@@ -34,3 +34,20 @@ export const validateNumbers = (amts: string) => {
 
   return validNumbers;
 };
+
+export const validateTokenIds = (amts: string) => {
+  // Split the input into lines and trim whitespace
+  const numbers = amts.split("\n").map((num) => num.trim());
+
+  // Regular expression to match valid numbers, including scientific notation
+  const numberRegex = /^-?\d+(\.\d+)?([eE][+-]?\d+)?$/;
+
+  // Filter out valid numbers and convert them to actual number type
+  const validNumbers = numbers
+    .filter((number) => numberRegex.test(number)) // Validate with regex
+    .map((number) => parseFloat(number)); // Convert to number
+
+  // Return the array of valid numbers
+
+  return validNumbers;
+};
