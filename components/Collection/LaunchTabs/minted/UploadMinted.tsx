@@ -13,13 +13,16 @@ import { Label } from "@radix-ui/react-label";
 import React, { useState } from "react";
 import Papa from "papaparse";
 import truncateEthAddress from "truncate-eth-address";
+import { Textarea } from "@/components/ui/textarea";
 
 type CsvData = {
   address: string;
   amount: string;
 };
 
-export function Upload({
+export function UploadMinted({
+  ids,
+  setTokenIds,
   addresses,
   setAddresses,
   amounts,
@@ -27,6 +30,7 @@ export function Upload({
   resetAmount,
   setAmounts,
   switchInput,
+  errorIdInpt,
 }: {
   addresses: string[];
   setAddresses: (addresses: string[]) => void;
@@ -35,6 +39,9 @@ export function Upload({
   resetAmount: (numbers: string) => void;
   setAmounts: (numbers: number[]) => void;
   switchInput: (bool: boolean) => void;
+  errorIdInpt: boolean;
+  ids: string;
+  setTokenIds: (id: string) => void;
 }) {
   const CSVUploader: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -150,11 +157,25 @@ export function Upload({
         <DialogHeader>
           <DialogTitle>Add Addresses</DialogTitle>
           <DialogDescription>
-            Upload a csv file with addresses and another with the distribution
-            rate. Click save when you&apos;re done.
+            Upload a csv file with addresses and the distribution rate. and make
+            sure to include the tokensIds to be airdropped{" "}
+            <b className="text-bold">Click save when you&apos;re done.</b>
           </DialogDescription>
         </DialogHeader>
         <CSVUploader />
+        <Textarea
+          value={ids}
+          onChange={(e) => setTokenIds(e.currentTarget.value)}
+          className={`w-full min-h-[120px] ${
+            errorIdInpt
+              ? "outline-red-500 border-red-500"
+              : "border-black outline-black"
+          }`}
+          placeholder={`Enter each tokenId to be airdropped on a new line, e.g.: \n3245\n4356\n9875`}
+        />
+        <div className="text-red-500 my-2">
+          {errorIdInpt ? "Invalid tokenIds format entered" : ""}
+        </div>
         <DialogClose asChild>
           <Button onClick={() => switchInput(true)} type="submit">
             Save changes

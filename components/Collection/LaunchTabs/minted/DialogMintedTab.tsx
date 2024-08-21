@@ -13,8 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowPathRoundedSquareIcon } from "@heroicons/react/24/outline";
 
-export function DialogTab({
+export function DialogMintedTab({
   adde,
+  ids,
   amtArr,
   setAddresses,
   setNumber,
@@ -27,10 +28,14 @@ export function DialogTab({
   switchInput,
   setErrorAdd,
   setErrorIds,
+  setTokenIds,
+  errorIdInpt,
 }: {
+  ids: string;
   adde: string;
   amtArr: string;
   setAddresses: (addresses: string) => void;
+  setTokenIds: (ids: string) => void;
   setNumber: (numbere: number) => void;
   setAmount: (amount: string) => void;
   errordd: boolean;
@@ -41,6 +46,7 @@ export function DialogTab({
   setErrorAdd: (bool: boolean) => void;
   setErrorIds: (bool: boolean) => void;
   clear: () => void;
+  errorIdInpt: boolean;
 }) {
   return (
     <Dialog>
@@ -56,10 +62,13 @@ export function DialogTab({
         <DialogHeader>
           <DialogTitle>Add Accounts</DialogTitle>
           <DialogDescription>
-            Add accounts to airdrop. Click save when you&apos;re done.
+            Add accounts to airdrop.{" "}
+            <b className="text-black">
+              make sure to Click save when you&apos;re done.
+            </b>
           </DialogDescription>
         </DialogHeader>
-        <div className="w-full flex items-center flex-col space-y-8 mt-5">
+        <div className="w-full flex items-center flex-col space-y-3 mt-5">
           <Textarea
             value={adde}
             onChange={(e) => setAddresses(e.currentTarget.value)}
@@ -73,6 +82,16 @@ export function DialogTab({
           <div className="text-red-500">
             {errordd ? "Invalid address format entered" : ""}
           </div>
+          <Textarea
+            value={ids}
+            onChange={(e) => setTokenIds(e.currentTarget.value)}
+            className={`w-full min-h-[120px] ${
+              errorIdInpt
+                ? "outline-red-500 border-red-500"
+                : "border-black outline-black"
+            }`}
+            placeholder={`Enter each tokenId to be airdropped on a new line, e.g.: \n3245\n4356\n9875`}
+          />
           <div className="w-full flex flex-col space-y-3 items-center transition-all">
             {amtSwitch ? (
               <Input
@@ -107,8 +126,10 @@ export function DialogTab({
                 Switch <ArrowPathRoundedSquareIcon className="w-5 ml-2" />
               </Button>
             </div>
-
-            <div className="text-red-500">
+            <div className="text-red-500 mt-2">
+              {errorIdInpt ? "Invalid tokenIds format entered" : ""}
+            </div>
+            <div className="text-red-500 my-2">
               {errorIds ? "Invalid amount format entered" : ""}
             </div>
           </div>

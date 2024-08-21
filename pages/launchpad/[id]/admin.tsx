@@ -1,6 +1,5 @@
 import AcceptOwnership from "@/components/AcceptOwnership";
 import Nav from "@/components/Header/Nav";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { NFTCollection } from "@/config/Abi";

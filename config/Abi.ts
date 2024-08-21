@@ -2745,11 +2745,6 @@ export const LaunchpadFactoryABI = [
         name: "_maxSupply",
         type: "uint256",
       },
-      {
-        internalType: "address",
-        name: "_creator",
-        type: "address",
-      },
     ],
     name: "createCollection",
     outputs: [
@@ -4232,10 +4227,11 @@ export const NFTCollection = [
     type: "receive",
   },
 ];
-export const LaunchpadContractMainnet = "";
+export const LaunchpadContractMainnet =
+  "0xf3089f7e86a5B83D8964BB85B449b40d29A6eD54";
 export const AirdropContractMainet =
   "0xC32c2a56A17e623D109b5869EA300ecbE6C7D648";
 export const LaunchpadFactoryContract =
-  "0x2245eE85D5195f4c2EFd4521EC0fC09fc86E5C60";
-export const AirdropContract = "";
+  "0x00fdC1EeA25F1763C4b39AD4d3BC5A63B84c1538";
+export const AirdropContract = "0x40CEdCF5F2A7BD180c9C8bFA07052F90C6aa0404";
 export const NftContract = "0xF157ef41cD23a896fFeacC3dB694346E94BFCF10";
