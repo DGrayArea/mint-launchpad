@@ -1,4 +1,8 @@
-import { AirdropContract, NFTCollection } from "@/config/Abi";
+import {
+  AirdropContract,
+  AirdropContractABI,
+  NFTCollection,
+} from "@/config/Abi";
 import {
   validateAddresses,
   validateNumbers,
@@ -44,6 +48,7 @@ const AirdropBanner = () => {
   const [selectOption, setSelectOption] = useState(false);
   const [errorIdInpt, setErrorIdInpt] = useState(false);
   const [tokenIds, setTokenIds] = useState("");
+  const [invalidLength, setInvalidLength] = useState(false);
 
   const {
     isLoading: isConfirming,
@@ -106,10 +111,12 @@ const AirdropBanner = () => {
     //   functionName: "setApprovalForAll",
     //   args: [AirdropContract, true],
     // });
+    setErrorIdInpt(false);
     setErrorAdd(false);
     setErrorIds(false);
 
     try {
+      // if (nftContract) {
       if (isMintable) {
         const addies = validateAddresses(addresses);
         const perAmounts = validateNumbers(amounts);
@@ -117,7 +124,7 @@ const AirdropBanner = () => {
           const _result = csvAddresses.map((address, index) => {
             return [address, csvAmounts[index]];
           });
-          console.log(_result);
+          console.log(_result, "here");
         } else {
           if (addies && addies?.length > 0) {
             if (!amtSwitch) {
@@ -129,15 +136,34 @@ const AirdropBanner = () => {
                       amount: perAmounts[index],
                     };
                   });
-                  const _contents = _result.map((content, index) => {
+                  const _contents = _result.map((content) => {
                     return [content.recipient, content.amount];
                   });
-                  console.log(_contents);
-                } else {
-                  setErrorIds(true);
-                  toast.error(
-                    `The Amounts and addresses are not equal in length`
-                  );
+                  const _content: [string | number][] = [];
+                  const tokenArr: [string | number][] = [];
+                  _contents.forEach(([address, count]: any[]) => {
+                    for (let i = 0; i < count; i++) {
+                      //@ts-ignore
+                      _content.push([address, 1]);
+                    }
+                  });
+
+                  if (_content.length > 0) {
+                    _content.forEach(([address]: any[], i) => {
+                      //@ts-ignore
+                      tokenArr.push([address, 1]);
+                    });
+                    writeAirdrop({
+                      abi: NFTCollection,
+                      //@ts-ignore
+                      address: nftContract,
+                      functionName: "airdropSequentialWithBatch",
+                      args: [tokenArr, 80],
+                    });
+                  } else {
+                    setErrorAdd(true);
+                    toast.error(`The addresses should not be empty`);
+                  }
                 }
               } else {
                 setErrorIds(true);
@@ -150,7 +176,31 @@ const AirdropBanner = () => {
                   //@ts-ignore
                   _input.push([address, numbers]);
                 });
-                console.log(_input);
+                const _content: [string | number][] = [];
+                const tokenArr: [string | number][] = [];
+                _input.forEach(([address, count]: any[]) => {
+                  for (let i = 0; i < count; i++) {
+                    //@ts-ignore
+                    _content.push([address, 1]);
+                  }
+                });
+
+                if (_content.length > 0) {
+                  _content.forEach(([address]: any[], i) => {
+                    //@ts-ignore
+                    tokenArr.push([address, 1]);
+                  });
+                  writeAirdrop({
+                    abi: NFTCollection,
+                    //@ts-ignore
+                    address: nftContract,
+                    functionName: "airdropSequentialWithBatch",
+                    args: [tokenArr, 80],
+                  });
+                } else {
+                  setErrorAdd(true);
+                  toast.error(`The addresses should not be empty`);
+                }
               } else {
                 setErrorIds(true);
                 toast.error(`No or Invalid number value detected`);
@@ -164,75 +214,151 @@ const AirdropBanner = () => {
       } else {
         const addies = validateAddresses(addresses);
         const perAmounts = validateNumbers(amounts);
-        const tokenIdse = validateTokenIds(tokenIds);
-        console.log(tokenIdse);
-        // if (inputSwitch) {
-        //   console.log(csvAddresses, csvAmounts);
-        //   const _result = csvAddresses.map((address, index) => {
-        //     return [address, csvAmounts[index]];
-        //   });
+        const { validNumbers: tokenIdse, duplicate } =
+          validateTokenIds(tokenIds);
 
-        //   const _content: [string | number][] = [];
-        //   _result.forEach(([address, count]: any[]) => {
-        //     for (let i = 0; i < count; i++) {
-        //       //@ts-ignore
-        //       _content.push([address, 1]);
-        //     }
-        //   });
-        //   console.log(_content);
-        // } else {
-        //   if (addies && addies?.length > 0) {
-        //     if (!amtSwitch) {
-        //       if (perAmounts && perAmounts.length > 0) {
-        //         if (addies.length === perAmounts.length) {
-        //           const _result = addies.map((address, index) => {
-        //             return {
-        //               recipient: address,
-        //               amount: perAmounts[index],
-        //             };
-        //           });
-        //           const _contents = _result.map((content, index) => {
-        //             return [content.recipient, content.amount];
-        //           });
-        //           const _input: [string | number][] = [];
-        //           _contents.forEach(([address, count]: any[]) => {
-        //             for (let i = 0; i < count; i++) {
-        //               //@ts-ignore
-        //               _input.push([address, 1]);
-        //             }
-        //           });
-        //           console.log(_input);
-        //         } else {
-        //           setErrorIds(true);
-        //           toast.error(
-        //             `The Amounts and addresses are not equal in length`
-        //           );
-        //         }
-        //       } else {
-        //         setErrorIds(true);
-        //         toast.error(`No or Invalid number(s) detected`);
-        //       }
-        //     } else {
-        //       if (numbers && numbers > 0) {
-        //         const _input: [string | number][] = [];
-        //         addies.forEach((address: any) => {
-        //           for (let i = 0; i < numbers; i++) {
-        //             //@ts-ignore
-        //             _input.push([address, 1]);
-        //           }
-        //         });
-        //         console.log(_input);
-        //       } else {
-        //         setErrorIds(true);
-        //         toast.error(`No or Invalid number value detected`);
-        //       }
-        //     }
-        //   } else {
-        //     setErrorAdd(true);
-        //     toast.error(`No or Invalid address(es) detected`);
-        //   }
-        // }
+        if (duplicate.size > 0) {
+          setErrorIds(true);
+          toast.error(
+            `Diplicate tokenId(s) found at Id(s) ${Array.from(duplicate).join(
+              ", "
+            )}`
+          );
+          throw new Error();
+        }
+        if (tokenIdse.length > 0) {
+          if (inputSwitch) {
+            const _result = csvAddresses.map((address, index) => {
+              return [address, csvAmounts[index]];
+            });
+
+            const _content: [string | number][] = [];
+            const tokenArr: [string | number][] = [];
+            _result.forEach(([address, count]: any[]) => {
+              for (let i = 0; i < count; i++) {
+                //@ts-ignore
+                _content.push([address, 1]);
+              }
+            });
+
+            if (_content.length == tokenIdse.length) {
+              _content.forEach(([address]: any[], i) => {
+                //@ts-ignore
+                tokenArr.push([address, tokenIdse[i]]);
+              });
+              writeAirdrop({
+                abi: AirdropContractABI,
+                //@ts-ignore
+                address: AirdropContractMainet,
+                functionName: "airdropERC721",
+                args: [nftContract, address, tokenArr],
+              });
+            } else {
+              setInvalidLength(true);
+              setErrorIds(true);
+              toast.error(
+                "The tokenId(s) length does not match the total count of NFTS to be airdropped"
+              );
+            }
+          } else {
+            if (addies && addies?.length > 0) {
+              if (!amtSwitch) {
+                if (perAmounts && perAmounts.length > 0) {
+                  if (addies.length === perAmounts.length) {
+                    const _result = addies.map((address, index) => {
+                      return {
+                        recipient: address,
+                        amount: perAmounts[index],
+                      };
+                    });
+                    const _contents = _result.map((content) => {
+                      return [content.recipient, content.amount];
+                    });
+                    const _input: [string | number][] = [];
+                    const tokenArr: [string | number][] = [];
+                    _contents.forEach(([address, count]: any[]) => {
+                      for (let i = 0; i < count; i++) {
+                        //@ts-ignore
+                        _input.push([address, 1]);
+                      }
+                    });
+                    if (_input.length == tokenIdse.length) {
+                      _input.forEach(([address]: any[], i) => {
+                        //@ts-ignore
+                        tokenArr.push([address, tokenIdse[i]]);
+                      });
+                      writeAirdrop({
+                        abi: AirdropContractABI,
+                        //@ts-ignore
+                        address: AirdropContractMainet,
+                        functionName: "airdropERC721",
+                        args: [nftContract, address, tokenArr],
+                      });
+                    } else {
+                      setInvalidLength(true);
+                      setErrorIds(true);
+                      toast.error(
+                        "The tokenId(s) length does not match the total count of NFTS to be airdropped"
+                      );
+                    }
+                  } else {
+                    setErrorIds(true);
+                    toast.error(
+                      `The Amounts and addresses are not equal in length`
+                    );
+                  }
+                } else {
+                  setErrorIds(true);
+                  toast.error(`No or Invalid number(s) detected`);
+                }
+              } else {
+                if (numbers && numbers > 0) {
+                  const _input: [string | number][] = [];
+                  const tokenArr: [string | number][] = [];
+                  addies.forEach((address: any) => {
+                    for (let i = 0; i < numbers; i++) {
+                      //@ts-ignore
+                      _input.push([address, 1]);
+                    }
+                  });
+                  if (_input.length == tokenIdse.length) {
+                    _input.forEach(([address]: any[], i) => {
+                      //@ts-ignore
+                      tokenArr.push([address, tokenIdse[i]]);
+                    });
+                    writeAirdrop({
+                      abi: AirdropContractABI,
+                      //@ts-ignore
+                      address: AirdropContractMainet,
+                      functionName: "airdropERC721",
+                      args: [nftContract, address, tokenArr],
+                    });
+                  } else {
+                    setInvalidLength(true);
+                    setErrorIds(true);
+                    toast.error(
+                      "The tokenId(s) length does not match the total count of NFTS to be airdropped"
+                    );
+                  }
+                } else {
+                  setErrorIds(true);
+                  toast.error(`No or Invalid number value detected`);
+                }
+              }
+            } else {
+              setErrorAdd(true);
+              toast.error(`No or Invalid address(es) detected`);
+            }
+          }
+        } else {
+          setErrorIdInpt(true);
+          toast.error(`No or Invalid tokenId(s) detected`);
+        }
       }
+      // } else {
+      //   toast.error("Please enter the NFT contract");
+      //   throw new Error();
+      // }
     } catch (error) {
       console.log(error);
       toast.error(`Error Airdropping NFTs`);

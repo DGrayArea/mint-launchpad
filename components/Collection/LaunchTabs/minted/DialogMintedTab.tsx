@@ -130,7 +130,7 @@ export function DialogMintedTab({
               {errorIdInpt ? "Invalid tokenIds format entered" : ""}
             </div>
             <div className="text-red-500 my-2">
-              {errorIds ? "Invalid amount format entered" : ""}
+              {errorIds ? "Invalid tokenId(s) format entered" : ""}
             </div>
           </div>
         </div>

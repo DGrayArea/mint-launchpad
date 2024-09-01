@@ -109,7 +109,7 @@ export function DialogTab({
             </div>
 
             <div className="text-red-500">
-              {errorIds ? "Invalid amount format entered" : ""}
+              {errorIds ? "Invalid tokenId(s) format entered" : ""}
             </div>
           </div>
         </div>

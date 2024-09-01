@@ -47,7 +47,18 @@ export const validateTokenIds = (amts: string) => {
     .filter((number) => numberRegex.test(number)) // Validate with regex
     .map((number) => parseFloat(number)); // Convert to number
 
-  // Return the array of valid numbers
+  // Check for duplicates
+  const seenNumbers = new Set();
+  const duplicates = new Set();
 
-  return validNumbers;
+  for (const number of validNumbers) {
+    if (seenNumbers.has(number)) {
+      duplicates.add(number); // Add to duplicates set if already seen
+    } else {
+      seenNumbers.add(number); // Add to seenNumbers set if not seen before
+    }
+  }
+  const myArray = Array.from(seenNumbers);
+  // Return the array of valid numbers
+  return { validNumbers: myArray, duplicate: duplicates };
 };
