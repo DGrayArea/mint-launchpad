@@ -1,6 +1,6 @@
 import {
-  AirdropContract,
   AirdropContractABI,
+  AirdropContractMainet,
   NFTCollection,
 } from "@/config/Abi";
 import {
@@ -22,9 +22,11 @@ import { Upload } from "./LaunchTabs/Upload";
 import { DialogMintedTab } from "./LaunchTabs/minted/DialogMintedTab";
 import { UploadMinted } from "./LaunchTabs/minted/UploadMinted";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
+import { ethers } from "ethers";
+import { provider, testnetProvider } from "@/config";
 
 const AirdropBanner = () => {
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
   const { data, error, isPending, writeContract } = useWriteContract();
   const {
     data: airdrop,
@@ -42,13 +44,36 @@ const AirdropBanner = () => {
   const [errordd, setErrorAdd] = useState(false);
   const [errorIds, setErrorIds] = useState(false);
   const [amtSwitch, setAmtSwitch] = useState(false);
-  const [isApproved, setIsApproved] = useState(true);
+  const [isApproved, setIsApproved] = useState(false);
   const [inputSwitch, setInputSwitch] = useState(false);
   const [isMintable, setIsMintable] = useState(true);
   const [selectOption, setSelectOption] = useState(false);
   const [errorIdInpt, setErrorIdInpt] = useState(false);
   const [tokenIds, setTokenIds] = useState("");
   const [invalidLength, setInvalidLength] = useState(false);
+
+  useEffect(() => {
+    const fetchApproval = async () => {
+      if (nftContract) {
+        const ethersProvider = chainId === 185 ? provider : testnetProvider;
+        const Provider = new ethers.JsonRpcProvider(ethersProvider);
+        const contract = new ethers.Contract(
+          nftContract,
+          NFTCollection,
+          Provider
+        );
+        // await Promise.all()
+        const approvale = await contract.isApprovedForAll(
+          address,
+          AirdropContractMainet
+        );
+        setIsApproved(approvale);
+      }
+    };
+    if (nftContract) {
+      fetchApproval();
+    }
+  }, [chainId, nftContract, address]);
 
   const {
     isLoading: isConfirming,
@@ -64,7 +89,7 @@ const AirdropBanner = () => {
   } = useWaitForTransactionReceipt({
     hash: airdrop,
   });
-  //@todo set approval
+
   useEffect(() => {
     if (isConfirmed) {
       toast.success("NFTs approved");
@@ -94,13 +119,17 @@ const AirdropBanner = () => {
   ]);
 
   const callApprove = () => {
-    writeContract({
-      abi: NFTCollection,
-      //@ts-ignore
-      address: nftContract,
-      functionName: "setApprovalForAll",
-      args: [AirdropContract, true],
-    });
+    if (nftContract) {
+      writeContract({
+        abi: NFTCollection,
+        //@ts-ignore
+        address: nftContract,
+        functionName: "setApprovalForAll",
+        args: [AirdropContractMainet, true],
+      });
+    } else {
+      toast.error("No or invalid NFT contract entered");
+    }
   };
 
   const callAirdrop = () => {
